@@ -1,16 +1,16 @@
 from setuptools import setup, find_packages
 
 setup(name='omniture',
-      description='A wrapper for the Adobe Omniture and SiteCatalyst web analytics API.',
+      description='A wrapper for the Adobe Analytics (Omniture and SiteCatalyst) web analytics API.',
       long_description=open('README.md').read(),
       author='Stijn Debrouwere',
       author_email='stijn@stdout.be',
       url='http://stdbrouw.github.com/python-omniture/',
       download_url='http://www.github.com/stdbrouw/python-omniture/tarball/master',
-      version='0.3.1',
+      version='0.4.0',
       license='MIT',
       packages=find_packages(),
-      keywords='data analytics api wrapper adobe',
+      keywords='data analytics api wrapper adobe omniture',
       install_requires=[
             'requests',
             'python-dateutil',

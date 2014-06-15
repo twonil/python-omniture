@@ -43,7 +43,6 @@ reporting suites:
     print analytics.suites
     suite = analytics.suites['guardiangu-network']
     print suite
-    print len(suite.evars)
     print suite.segments
     print suite.elements
 
