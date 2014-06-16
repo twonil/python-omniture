@@ -102,12 +102,6 @@ class QueryTest(unittest.TestCase):
         """ Make sure the current data flag gets set correctly """
         basic_report = self.analytics.suites[0].report.element('page').metric('pageviews').metric('visits').currentData()
         self.assertEqual(basic_report.raw['currentData'], True)
-        
-    def test_segments(self)
-        basic_report = self.analytics.suites[0]
-            .report.element('page').metric('pageviews')
-            .filter(self.analytics.suites[0].segments[0])
-            .run()
 
 
 if __name__ == '__main__':
