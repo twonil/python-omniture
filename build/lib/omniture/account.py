@@ -42,7 +42,7 @@ class Account(object):
             data=json.dumps(query),
             headers=self._build_token()
             )
-        self.log.debug("Response for %s.%s:%s", api, method, response.text)
+        self.log.debug("Response for %s.%s:%s", api, method, response.json())
         json_response = response.json()
 
         if type(json_response) == dict:
