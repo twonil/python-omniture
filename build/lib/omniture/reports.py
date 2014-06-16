@@ -48,9 +48,9 @@ class Report(object):
         self.period = str(report['period'])
         self.type = str(report['type'])
         
-        segment = report.get('segment_id') 
+        segment = report.get('segments') 
         if segment:
-            self.segment = self.query.suite.segments[report['segment_id']]
+            self.segment = self.query.suite.segments[report['segment']]
         else:
             self.segment = None
 
@@ -173,42 +173,6 @@ class Report(object):
 
 Report.method = "Queue"
     
-
-class OverTimeReport(Report):
-    def process(self):
-        super(OverTimeReport, self).process()
-
-        # TODO: this works for over_time reports and I believe for ranked
-        # reports as well, but trended reports have their data in 
-        # `data.breakdown:[breakdown:[counts]]`
-        for row in self.report['data']:
-            for i, value in enumerate(row['counts']):
-                if self.metrics[i].type == 'number':
-                    value = float(value)
-                self.data[i].append(value)
-
-OverTimeReport.method = 'QueueOvertime'
-
-
-class RankedReport(Report):
-    def process(self):
-        super(RankedReport, self).process()
-
-        for row in self.report['data']:
-            for i, value in enumerate(row['counts']):
-                if self.metrics[i].type == 'number':
-                    value = float(value)
-                self.data[i].append((row['name'], row['url'], value))
-
-RankedReport.method = 'QueueRanked'
-
-
-class TrendedReport(Report):
-    def process(self):
-        super(TrendedReport, self).process()
-
-TrendedReport.method = 'QueueTrended'
-
 
 class DataWarehouseReport(object):
     pass

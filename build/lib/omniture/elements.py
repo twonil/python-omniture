@@ -35,7 +35,7 @@ class Value(object):
     def __str__(self):
         """ allows users to print this out in a user friendly using print
         """
-        return "ID {0:30} | Name: {1} \n".format(self.id, self.title)
+        return "ID {0:25} | Name: {1} \n".format(self.id, self.title)
 
 
 class Element(Value):

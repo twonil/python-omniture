@@ -143,12 +143,6 @@ class Query(object):
         return self
 
     @immutable
-    def sort(self, facet):
-        #self.raw['sortBy'] = facet
-        raise NotImplementedError()
-        return self
-
-    @immutable
     def filter(self, segments=None, segment=None):
         """ Set Add a segment to the report. """
         # It would appear to me that 'segment_id' has a strict subset
@@ -211,37 +205,11 @@ class Query(object):
         """ Specify the sortBy Metric """
         self.raw['sortBy'] = metric
         return self
-    
+
     @immutable
     def currentData(self):
         """ Set the currentData flag """
         self.raw['currentData'] = True
-        return self
-
-    @immutable
-    def ranked(self, metrics, elements):
-        self._serialize_values(metrics, 'metrics')
-
-        self.report = reports.RankedReport
-        self.raw['metrics'] = self._serialize_values(metrics, 'metrics')
-        self.raw['elements'] = self._serialize_values(elements, 'elements')
-        return self
-
-    @immutable
-    def trended(self, metric, element):
-        if isinstance(metric, list) or isinstance(element, list):
-            raise ValueError("Trended reports can only be \
-                             generated for one metric and one element.")
-
-        self.report = reports.TrendedReport
-        self.raw['metrics'] = self._serialize_values(metric, 'metrics')
-        self.raw['elements'] = self._serialize_values(element, 'elements')
-        return self
-
-    @immutable
-    def over_time(self, metrics):
-        self.report = reports.OverTimeReport
-        self.raw['metrics'] = self._serialize_values(metrics, 'metrics')
         return self
 
     # TODO: data warehouse reports are a work in progress

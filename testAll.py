@@ -1,6 +1,6 @@
 import unittest
 from testaccountUnit import AccountUnitTest
-from testQueue import QueueTest
+from testQuery import QueryTest
 from testReports import ReportTest
 
 
