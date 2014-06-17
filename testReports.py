@@ -47,7 +47,7 @@ class ReportTest(unittest.TestCase):
         self.assertEqual(response.period, checkdate)
 
         #check segmetns
-        self.assertIsNone(response.segment)
+        self.assertIsNone(response.segments)
 
         #Check Data
         self.assertIsInstance(response.data, list, "Data isn't getting populated right")
@@ -87,5 +87,12 @@ class ReportTest(unittest.TestCase):
         trended = self.analytics.suites[test_report_suite].report.element("page").metric("pageviews").granularity('hour').run()
         self.assertIsInstance(trended.dataframe, pandas.DataFrame, "Data Frame Object doesn't work")   
         
+    def test_segments_id(self):
+        """ Make sure segments can be added """
+        suite = self.analytics.suites[test_report_suite]
+        report = suite.report.filter(suite.segments[0]).run()
+        
+        self.assertEqual(report.segments[0], suite.segments[0], "The segments don't match")
+    
 if __name__ == '__main__':
     unittest.main()

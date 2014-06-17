@@ -117,7 +117,7 @@ class Suite(Value):
     @utils.memoize
     def segments(self):
         """ Return the list of valid segments for the current report suite """
-        data = self.request('Segments', 'Get')[0]['sc_segments']
+        data = self.request('Segments', 'Get')
         return Segment.list('segments', data, self, 'name', 'id')
 
     @property
