@@ -30,7 +30,7 @@ class Query(object):
     Making it easy to create a report.
     """
 
-    GRANULARITY_LEVELS = ['hour', 'day', 'month', 'quarter', 'year']
+    GRANULARITY_LEVELS = ['hour', 'day', 'week', 'month', 'quarter', 'year']
 
     def __init__(self, suite):
         """ Setup the basic structure of the report query. """
@@ -143,16 +143,19 @@ class Query(object):
         return self
 
     @immutable
-    def filter(self, segments=None, segment=None):
+    def filter(self, segment=None, segments=None):
         """ Set Add a segment to the report. """
         # It would appear to me that 'segment_id' has a strict subset
         # of the functionality of 'segments', but until I find out for
         # sure, I'll provide both options.
+        if not self.raw.has_key('segments'):
+            self.raw['segments'] = []
+        
         if segments:
-            self.raw['segments'] = self._serialize_values(segments, 'segments')
+            self.raw['segments'].append(self._serialize_values(segments, 'segments'))
         elif segment:
-            self.raw['segment_id'] = self._normalize_value(segment,
-                                                           'segments').id
+            self.raw['segments'].append({"id":self._normalize_value(segment,
+                                                           'segments').id})
         else:
             raise ValueError()
 
