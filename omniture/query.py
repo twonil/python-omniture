@@ -143,7 +143,7 @@ class Query(object):
         return self
 
     @immutable
-    def filter(self, segment=None, segments=None):
+    def filter(self, segment=None, segments=None, **kwargs):
         """ Set Add a segment to the report. """
         # It would appear to me that 'segment_id' has a strict subset
         # of the functionality of 'segments', but until I find out for
@@ -156,6 +156,8 @@ class Query(object):
         elif segment:
             self.raw['segments'].append({"id":self._normalize_value(segment,
                                                            'segments').id})
+        elif kwargs:
+            self.raw['segments'].append(kwargs)
         else:
             raise ValueError()
 
