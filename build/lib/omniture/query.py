@@ -30,7 +30,7 @@ class Query(object):
     Making it easy to create a report.
     """
 
-    GRANULARITY_LEVELS = ['hour', 'day', 'month', 'quarter', 'year']
+    GRANULARITY_LEVELS = ['hour', 'day', 'week', 'month', 'quarter', 'year']
 
     def __init__(self, suite):
         """ Setup the basic structure of the report query. """
@@ -156,8 +156,10 @@ class Query(object):
         elif segment:
             self.raw['segments'].append({"id":self._normalize_value(segment,
                                                            'segments').id})
+
         elif kwargs:
             self.raw['segments'].append(kwargs)
+
         else:
             raise ValueError()
 
