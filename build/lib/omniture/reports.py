@@ -48,11 +48,13 @@ class Report(object):
         self.period = str(report['period'])
         self.type = str(report['type'])
         
-        segment = report.get('segments') 
-        if segment:
-            self.segment = self.query.suite.segments[report['segment']]
+        segments = report.get('segments')
+        if segments:
+            self.segments = []
+            for s in segments:
+                self.segments.append(self.query.suite.segments[s['id']])
         else:
-            self.segment = None
+            self.segments = None
 
         #Set as none until it is actually used
         self.dict_data = None

@@ -102,6 +102,12 @@ class QueryTest(unittest.TestCase):
         """ Make sure the current data flag gets set correctly """
         basic_report = self.analytics.suites[0].report.element('page').metric('pageviews').metric('visits').currentData()
         self.assertEqual(basic_report.raw['currentData'], True)
+        
+    def test_inline_segments(self):
+        """ Make sure inline segments work """
+        report = self.analytics.suites[0].report.element('page').metric('pageviews').metric('visits').filter(element='page', selected=["test","test1"])
+        self.assertEqual(report.raw['segments'][0]['element'], "page", "The inline segment element isn't getting set")
+        self.assertEqual(report.raw['segments'][0]['selected'], ["test","test1"], "The inline segment selected field isn't getting set")
 
 
 if __name__ == '__main__':

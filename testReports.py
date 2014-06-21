@@ -93,6 +93,13 @@ class ReportTest(unittest.TestCase):
         report = suite.report.filter(suite.segments[0]).run()
         
         self.assertEqual(report.segments[0], suite.segments[0], "The segments don't match")
+
+    def test_inline_segment(self):
+        """ Make sure inline segments work """
+        #pretty poor check but need to make it work with any report suite
+        report = self.analytics.suites[0].report.element('page').metric('pageviews').metric('visits').filter(element='browser', selected=["Google Chrome 32.0"]).run()
+        self.assertIsInstance(report.data, list, "inline segments don't work")
+        
     
 if __name__ == '__main__':
     unittest.main()
