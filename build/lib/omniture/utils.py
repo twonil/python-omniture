@@ -18,6 +18,7 @@ class memoize:
 
 
 class AddressableList(list):
+    """ List of items addressable either by id or by name """
     def __init__(self, items, name='items'):
         super(AddressableList, self).__init__(items)
         self.name = name

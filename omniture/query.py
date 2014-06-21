@@ -22,12 +22,15 @@ def immutable(method):
 
 
 class Query(object):
-    """ An object to query the Reporting API for Adobe Analytics.
+    """ Lets you build a query to the Reporting API for Adobe Analytics.
 
     Methods in this object are chainable. For example
     >>>  report = report.element("page").element("prop1").
         metric("pageviews").granularity("day").run()
     Making it easy to create a report.
+    
+    To see the raw definition use 
+    >>> print report
     """
 
     GRANULARITY_LEVELS = ['hour', 'day', 'week', 'month', 'quarter', 'year']

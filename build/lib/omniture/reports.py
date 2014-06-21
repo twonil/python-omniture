@@ -8,6 +8,10 @@ import json
 
 
 class InvalidReportError(Exception):
+    """ 
+    Exception raised when the API says a report defintion is
+    invalid
+    """
     def normalize(self, error):
         print 'error', error
         return {
@@ -33,6 +37,19 @@ class ReportNotReadyError(Exception):
 
 #  TODO: also make this iterable (go through rows)
 class Report(object):
+    """ 
+    Object to parse the responses of the report 
+    
+    To get the data use
+    >>> report.data
+    
+    To get a Pandas DataFrame use
+    >>> report.dataframe
+    
+    To get the raw response use 
+    >>> print report
+    
+    """
     def process(self):
         """ Parse out the relevant data from the report and store it for easy access
             Should only be used internally to the class

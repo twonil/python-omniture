@@ -12,6 +12,7 @@ import logging
 
 
 class Account(object):
+    """ A wrapper for the Adobe Analytics API. Allows you to query the reporting API """
     DEFAULT_ENDPOINT = 'https://api.omniture.com/admin/1.4/rest/'
 
     def __init__(self, username, secret, endpoint=DEFAULT_ENDPOINT):
@@ -86,6 +87,7 @@ class Account(object):
 
 
 class Suite(Value):
+    """Lets you query a specific report suite. """
     def request(self, api, method, query={}):
         raw_query = {}
         raw_query.update(query)

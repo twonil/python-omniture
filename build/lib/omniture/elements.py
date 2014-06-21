@@ -6,6 +6,7 @@ import logging
 
 
 class Value(object):
+    """ Searchable Dict. Can search on both the key and the value """
     def __init__(self, title, id, parent, extra={}):
         self.log = logging.getLogger(__name__)
         self.title = title
@@ -39,6 +40,7 @@ class Value(object):
 
 
 class Element(Value):
+    """ An element that you can use in the Reports to get data back """
     def range(self, *vargs):
         l = len(vargs)
         if l == 1:
