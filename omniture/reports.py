@@ -4,6 +4,7 @@ from elements import Value, Element, Segment
 import utils
 import logging
 from collections import OrderedDict
+from datetime import datetime
 import json
 
 
@@ -123,7 +124,12 @@ class Report(object):
                 element = str(self.elements[level-1].id)
             else:
                 element = str(self.elements[level].id)
-            data[element] = str(row['name'])
+            
+            if element == "datetime":
+                data[element] = datetime(int(row.get('year',0)),int(row.get('month',0)),int(row.get('day',0)),int(row.get('hour',0)))
+                data["datetime_friendly"] = str(row['name'])
+            else:
+                data[element] = str(row['name'])
             #parse out any breakdowns and add to the data set    
             if row.has_key('breakdown'):
                 data_set.extend(self.parse_rows(row['breakdown'], level+1, data))
