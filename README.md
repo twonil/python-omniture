@@ -52,6 +52,7 @@ reporting suites:
     print suite
     print suite.metrics
     print suite.elements
+    print suite.segments
 ```
 
 You can refer to suites, segments, elements and so on using both their
@@ -59,7 +60,7 @@ human-readable name or their id. So for example `suite.metrics['pageviews']` and
 
 ## Running a report
 
-`python-omniture` can run ranked, trended and "over time" reports. Pathing reports are still in the works
+`python-omniture` can run ranked, trended and over time reports. Pathing reports are still in the works
 
 Here's a quick example: 
 
@@ -69,25 +70,17 @@ Here's a quick example:
         .metric('pageviews') \
         .run()
 ```
+This will generate the report definition and run the report. You can alternatively generate a report definition and save the report defintion to a variable by omitting the call to the `run()` method
 
-Some basic features of the three kinds of reports you can run: 
-
-Accessing the data in a report works as follows:
-
-```python
-    report.data
-```    
-    
-This will generate a list of dicts with the metrics and elements called out by id. 
-
-### Pandas Support
-`python-omniture` can also generate a data frame of the data returned. It works as follows:
+If you call `print` on the report defintion it will print out the JSON that you can use in the [API explorer](https://marketing.adobe.com/developer/en_US/get-started/api-explorer) for debugging or to use in other scripts
 
 ```python
-    report.dataframe
+    report = suite.report \
+        .element('page') \
+        .metric('pageviews') \
+        
+    print report
 ```
-
-Pandas Data frames can be useful if you need to analyize the the data or transform it easily.
 
 ### Report Options 
 Here are the options you can add to a report. 
@@ -114,12 +107,44 @@ Here are the options you can add to a report.
 
 **sortBy()** -- `sortBy('metric')` Set the sortBy metric
 
+**filter()** -- `filter('segment')` or `filter(element='element', selected=[])` Set the segment to be applied to the report. Can either be an segment id/name or can be used to define an inline segment by specifying the paramtered. You can add multiple filters if needed and they will be stacked (anded together)
+```python
+    report = suite.report.filter('537d509ee4b0893ab30616c7')
+    report = suite.report.filter(element='page', selected=['homepage'])
+    report = suite.report.filter('537d509ee4b0893ab30616c7')\
+        .filter(element='page', selected=['homepage'])
+```
+
 **currentData()** --`currentData()` Set the currentData flag
 
 **run()** -- `run()` Run the report and check the queue until done
 
 **set()** -- `set(key, value)` Set a custom attribute in the report definition
 
+## Using the Results of a report
+
+To see the raw output of a report. 
+```python
+    print report
+```
+
+If you need an easy way to access the data in a report:
+
+```python
+    data = report.data
+```    
+    
+This will generate a list of dicts with the metrics and elements called out by id. 
+
+
+### Pandas Support
+`python-omniture` can also generate a data frame of the data returned. It works as follows:
+
+```python
+   df = report.dataframe
+```
+
+Pandas Data frames can be useful if you need to analyize the the data or transform it easily.
 
 ### Getting down to the plumbing.
 
@@ -135,14 +160,6 @@ In these cases, it can be useful to use the lower-level access this module provi
         
 
     print query
-```
-
-You can also do the same with the reponses to the raw response nicely formated
-
-```python
-    response = query.run()
-    
-    print response
 ```
 
 ### Running multiple reports
@@ -185,7 +202,7 @@ Company.GetReportSuites I would do
 Feel free to contribute by filing issues or issuing a pull reqeust. 
 
 #### Build 
-If you want to build run 
+If you want to build the module
 
 ```bash
     bash build.sh
