@@ -192,6 +192,11 @@ class Query(object):
     def breakdown(self, element, **kwargs):
         """ Pass through for element. Adds an element to the report. """
         return self.element(element, **kwargs)
+    
+    def elements(self, *args):
+        """ Shortcut for adding multiple elements. Doesn't support arguments """
+        for e in args:
+            self.elements(e)
 
     @immutable
     def metric(self, metric):
@@ -207,6 +212,11 @@ class Query(object):
         #self.raw['metrics'] = self._serialize_values(metric, 'metrics')
         #TODO allow this metric to accept a list
         return self
+    
+    def metrics(self, *args):
+        """ Shortcut for adding multiple metrics """
+        for m in args:
+            self.metric(m)
 
     @immutable
     def sortBy(self, metric):

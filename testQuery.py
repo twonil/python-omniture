@@ -56,7 +56,13 @@ class QueryTest(unittest.TestCase):
             self.assertEqual(len(report.elements), 2, "The number of elements is wrong")
             self.assertEqual(report.type, "ranked", "This is the wrong type of report it should be ranked")
 
-   
+    def test_elements(self):
+        report = self.analytics.suites[0].report.elements("page","browser").run()
+        self.assertEqual(report.elements[0].id,"page", "The 1st element is wrong")
+        self.assertEqual(report.elements[1].id,"browser", "The 2nd element is wrong")
+        self.assertEqual(len(report.elements), 2, "The number of elements is wrong")
+        self.assertEqual(report.type, "ranked", "This is the wrong type of report it should be ranked")
+        
     def test_double_metric(self):
         basic_report = self.analytics.suites[0].report.metric("pageviews").metric("visits")
         queue = []
@@ -68,6 +74,13 @@ class QueryTest(unittest.TestCase):
             self.assertEqual(report.metrics[1].id,"visits", "The 2nd element is wrong")
             self.assertEqual(len(report.metrics), 2, "The number of elements is wrong")
             self.assertEqual(report.type, "overtime", "This is the wrong type of report it should be overtime")
+    
+    def test_metrics(self):
+        report = self.analytics.suites[0].report.metrics("pageviews", "visits").run()
+        self.assertEqual(report.metrics[0].id,"pageviews", "The 1st element is wrong")
+        self.assertEqual(report.metrics[1].id,"visits", "The 2nd element is wrong")
+        self.assertEqual(len(report.metrics), 2, "The number of elements is wrong")
+        self.assertEqual(report.type, "overtime", "This is the wrong type of report it should be overtime")
     
     def test_element_paratmers(self):
         """Test the top and startingWith parameters

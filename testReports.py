@@ -9,11 +9,12 @@ from datetime import date
 import pandas
 from pprint import pprint
 import inspect
+import datetime
 
 creds = {}
 creds['username'] = os.environ['OMNITURE_USERNAME']
 creds['secret'] = os.environ['OMNITURE_SECRET']
-test_report_suite = 0
+test_report_suite = 'omniture.api-gateway'
 
 
 class ReportTest(unittest.TestCase):
@@ -52,7 +53,7 @@ class ReportTest(unittest.TestCase):
         #Check Data
         self.assertIsInstance(response.data, list, "Data isn't getting populated right")
         self.assertIsInstance(response.data[0] , dict, "The data isn't getting into the dict")
-        self.assertIsInstance(response.data[0]['datetime'], str, "The date isn't getting populated in the data")
+        self.assertIsInstance(response.data[0]['datetime'], datetime.datetime, "The date isn't getting populated in the data")
         self.assertIsInstance(response.data[0]['pageviews'], int, "The pageviews aren't getting populated in the data")
         
             
@@ -78,7 +79,7 @@ class ReportTest(unittest.TestCase):
         trended = self.analytics.suites[test_report_suite].report.element("page").metric("pageviews").granularity('hour').run()
         self.assertIsInstance(trended.data, list, "Treneded Reports don't work")
         self.assertIsInstance(trended.data[0] , dict, "The data isn't getting into the dict")
-        self.assertIsInstance(trended.data[0]['datetime'], str, "The date isn't getting propulated correctly")
+        self.assertIsInstance(trended.data[0]['datetime'], datetime.datetime, "The date isn't getting propulated correctly")
         self.assertIsInstance(trended.data[0]['page'], str, "The page isn't getting populated in the data")
         self.assertIsInstance(trended.data[0]['pageviews'], int, "The pageviews aren't getting populated in the data")
         
