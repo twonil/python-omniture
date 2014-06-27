@@ -41,6 +41,17 @@ class AddressableList(list):
                 raise KeyError("Cannot find {key} among the available {name}"
                                .format(key=key, name=self.name))
 
+    def _repr_html_(self):
+        """ HTML formating for iPython users """
+        html = "<table>"
+        html += "<tr><td><b>{0}</b></td><td><b>{1}</b></td></tr>".format("ID", "Title")
+        for i in self:
+            html += "<tr>"
+            html += i._repr_html_()
+            html += "</tr>"
+        html +="</table>"
+        return html
+
     def __str__(self):
         string = ""
         for i in self:

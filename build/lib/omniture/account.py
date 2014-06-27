@@ -24,7 +24,7 @@ class Account(object):
         data = self.request('Company', 'GetReportSuites')['report_suites']
         suites = [Suite(suite['site_title'], suite['rsid'], self) for suite in data]
         self.suites = utils.AddressableList(suites)
-
+        
     def request(self, api, method, query={}):
         """
         Make a request to the Adobe APIs.
@@ -80,6 +80,15 @@ class Account(object):
 
         return {'X-WSSE': header}
 
+    def _repr_html_(self):
+        """ Format in HTML for iPython Users """
+        html = ""
+        html += "<b>{0}</b>: {1}</br>".format("Username", self.username)
+        html += "<b>{0}</b>: {1}</br>".format("Secret", "***************")
+        html += "<b>{0}</b>: {1}</br>".format("Report Suites", len(self.suites))
+        html += "<b>{0}</b>: {1}</br>".format("Endpoint", self.endpoint)
+        return html
+
     def __str__(self):
         return "Analytics Account -------------\n Username: \
             {0} \n Report Suites: {1} \n Endpoint: {2}" \
@@ -126,3 +135,7 @@ class Suite(Value):
     def report(self):
         """ Return a report to be run on this report suite """
         return Query(self)
+    
+    def _repr_html_(self):
+        """ Format in HTML for iPython Users """
+        return "<td>{0}</td><td>{1}</td>".format(self.id, self.title)

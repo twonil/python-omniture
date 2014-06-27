@@ -318,6 +318,25 @@ class Query(object):
             return self.suite.request('Report',
                                       'CancelReport',
                                       {'reportID': self.id})
+    def json(self):
+        """ Return a JSON string of the Request """
+        return json.dumps(self.build(), indent=4, separators=(',', ': '))
 
     def __str__(self):
-        return json.dumps(self.build(), indent=4, separators=(',', ': '))
+        return self.json()
+    
+    def _repr_html_(self):
+        """ Format in HTML for iPython Users """
+        html = "Current Report Settings</br>"
+        for key, value in self.raw.iteritems():
+            html += "<b>{0}</b>: {1} </br>".format(key, value)
+        if self.id:
+            html += "This report has been submitted</br>"
+            html += "<b>{0}</b>: {1} </br>".format("ReportId", self.id)
+        return html
+    
+    def __dir__(self):
+        """ Give sensible options for Tab Completion mostly for iPython """
+        return ['async','breakdown','cancel','clone','currentData', 'element',
+                'filter', 'granularity', 'id','json' ,'metric', 'queue', 'range', 'raw', 'report',
+                'request', 'run', 'set', 'sortBy', 'suite']

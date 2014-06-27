@@ -193,6 +193,33 @@ class Report(object):
         }
         return "<omniture.RankedReport (metrics) {metrics} (elements) {elements}>".format(**info)
     
+    def __div__(self):
+        """ Give sensible options for Tab Completion mostly for iPython """
+        return ['data','dataframe', 'metrics','elements', 'segments', 'period', 'type']
+    
+    def _repr_html_(self):
+        """ Format in HTML for iPython Users """
+        html = "<table>"
+        for index, item in enumerate(self.data):
+            html += "<tr>"
+            #populate header Row
+            if index < 1:
+                html += "<tr>"
+                if item.has_key('datetime'):
+                    html += "<td><b>{0}<b></td>".format('datetime')
+                for key in item:
+                    if key != 'datetime':
+                        html += "<td><b>{0}<b></td>".format(key)
+                html += "</tr><tr>"
+            
+            #Make sure date time is alway listed first
+            if item.has_key('datetime'):
+                html += "<td>{0}</td>".format(item['datetime'])
+            for key, value in item.iteritems():
+                if key != 'datetime':
+                    html += "<td>{0}</td>".format(value)
+        return html
+    
     def __str__(self):
         return json.dumps(self.report,indent=4, separators=(',', ': '))
 
