@@ -112,7 +112,12 @@ class Query(object):
 
     @immutable
     def granularity(self, granularity):
-        """ Set the granulartiy for the report. """
+        """ 
+        Set the granulartiy for the report. 
+        
+        Values are one of the following 
+        'hour', 'day', 'week', 'month', 'quarter', 'year'
+        """
         if granularity not in self.GRANULARITY_LEVELS:
                 levels = ", ".join(self.GRANULARITY_LEVELS)
                 raise ValueError("Granularity should be one of: " + levels)
@@ -195,8 +200,11 @@ class Query(object):
     
     def elements(self, *args):
         """ Shortcut for adding multiple elements. Doesn't support arguments """
+        obj = self
         for e in args:
-            self.elements(e)
+            obj = obj.element(e)
+            
+        return obj
 
     @immutable
     def metric(self, metric):
@@ -215,8 +223,11 @@ class Query(object):
     
     def metrics(self, *args):
         """ Shortcut for adding multiple metrics """
+        obj = self
         for m in args:
-            self.metric(m)
+            obj = obj.metric(m)
+
+        return obj
 
     @immutable
     def sortBy(self, metric):
@@ -303,9 +314,9 @@ class Query(object):
         return self.report(response, self)
 
     #shortcut to run a report immediately
-    def run(self):
+    def run(self, heartbeat=None, interval=1):
         """Shortcut for sync(). Runs the current report synchronously. """
-        return self.sync()
+        return self.sync(heartbeat, interval)
 
     # only for SiteCatalyst queries
     def async(self, callback=None, heartbeat=None, interval=1):

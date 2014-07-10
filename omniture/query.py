@@ -112,7 +112,12 @@ class Query(object):
 
     @immutable
     def granularity(self, granularity):
-        """ Set the granulartiy for the report. """
+        """ 
+        Set the granulartiy for the report. 
+        
+        Values are one of the following 
+        'hour', 'day', 'week', 'month', 'quarter', 'year'
+        """
         if granularity not in self.GRANULARITY_LEVELS:
                 levels = ", ".join(self.GRANULARITY_LEVELS)
                 raise ValueError("Granularity should be one of: " + levels)

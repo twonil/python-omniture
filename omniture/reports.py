@@ -195,7 +195,7 @@ class Report(object):
     
     def __div__(self):
         """ Give sensible options for Tab Completion mostly for iPython """
-        return ['data','dataframe', 'metrics','elements', 'segments', 'period', 'type']
+        return ['data','dataframe', 'metrics','elements', 'segments', 'period', 'type', 'timing']
     
     def _repr_html_(self):
         """ Format in HTML for iPython Users """
@@ -221,7 +221,7 @@ class Report(object):
         return html
     
     def __str__(self):
-        return json.dumps(self.report,indent=4, separators=(',', ': '))
+        return json.dumps(self.raw,indent=4, separators=(',', ': '))
 
 Report.method = "Queue"
     
