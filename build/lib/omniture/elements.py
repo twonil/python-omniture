@@ -9,7 +9,7 @@ class Value(object):
     """ Searchable Dict. Can search on both the key and the value """
     def __init__(self, title, id, parent, extra={}):
         self.log = logging.getLogger(__name__)
-        self.title = title
+        self.title = title.encode('utf-8')
         self.id = id
         self.parent = parent
         self.properties = {'id': id}
@@ -23,6 +23,7 @@ class Value(object):
         return utils.AddressableList(values, name)
 
     def __repr__(self):
+        print self
         return "<{title}: {id} in {parent}>".format(**self.__dict__)
 
     def copy(self):
