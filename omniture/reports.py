@@ -191,7 +191,7 @@ class Report(object):
             'metrics': ", ".join(map(str, self.metrics)), 
             'elements': ", ".join(map(str, self.elements)), 
         }
-        return "<omniture.RankedReport (metrics) {metrics} (elements) {elements}>".format(**info)
+        return "<omniture.Report (metrics) {metrics} (elements) {elements}>".format(**info)
     
     def __div__(self):
         """ Give sensible options for Tab Completion mostly for iPython """

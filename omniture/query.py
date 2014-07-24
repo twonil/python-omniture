@@ -11,6 +11,7 @@ import json
 import logging
 
 
+
 def immutable(method):
     @functools.wraps(method)
     def wrapped_method(self, *vargs, **kwargs):
@@ -106,7 +107,7 @@ class Query(object):
             })
 
         if granularity:
-            self.granularity(granularity)
+            self.raw = self.granularity(granularity).raw
 
         return self
 

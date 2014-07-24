@@ -139,3 +139,6 @@ class Suite(Value):
     def _repr_html_(self):
         """ Format in HTML for iPython Users """
         return "<td>{0}</td><td>{1}</td>".format(self.id, self.title)
+    
+    def __str__(self):
+        return "ID {0:25} | Name: {1} \n".format(self.id, self.title)
