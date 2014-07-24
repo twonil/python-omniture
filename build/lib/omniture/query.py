@@ -10,6 +10,8 @@ import utils
 import json
 import logging
 
+import pdb;  
+
 
 def immutable(method):
     @functools.wraps(method)
@@ -105,8 +107,9 @@ class Query(object):
                 'dateTo': stop.isoformat(),
             })
 
+        pdb.set_trace()
         if granularity:
-            self.granularity(granularity)
+            self.raw = self.granularity(granularity).raw
 
         return self
 

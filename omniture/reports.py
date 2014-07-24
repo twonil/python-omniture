@@ -129,7 +129,7 @@ class Report(object):
                 data[element] = datetime(int(row.get('year',0)),int(row.get('month',0)),int(row.get('day',0)),int(row.get('hour',0)))
                 data["datetime_friendly"] = str(row['name'])
             else:
-                data[element] = str(row['name'])
+                data[element] = row['name'].encode('utf-8')
             #parse out any breakdowns and add to the data set    
             if row.has_key('breakdown'):
                 data_set.extend(self.parse_rows(row['breakdown'], level+1, data))
@@ -191,7 +191,7 @@ class Report(object):
             'metrics': ", ".join(map(str, self.metrics)), 
             'elements': ", ".join(map(str, self.elements)), 
         }
-        return "<omniture.RankedReport (metrics) {metrics} (elements) {elements}>".format(**info)
+        return "<omniture.Report (metrics) {metrics} (elements) {elements}>".format(**info)
     
     def __div__(self):
         """ Give sensible options for Tab Completion mostly for iPython """

@@ -58,6 +58,8 @@ class AddressableList(list):
             string += i.__str__()
         return string
 
+    def __repr__(self):
+        return "<AddressableList>"
 
 class AddressableDict(AddressableList):
     def __getitem__(self, key):
