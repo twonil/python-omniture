@@ -117,7 +117,8 @@ Here are the options you can add to a report.
 
 **currentData()** --`currentData()` Set the currentData flag
 
-**run()** -- `run()` Run the report and check the queue until done
+**run()** -- `run(defaultheartbeat=True)` Run the report and check the queue until done. The `defaultheartbeat` writes a . (period) out to the console each time it checks on the report.
+
 
 **set()** -- `set(key, value)` Set a custom attribute in the report definition
 

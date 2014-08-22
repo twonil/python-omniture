@@ -4,6 +4,7 @@ from elements import Value, Element, Segment
 import utils
 import logging
 from collections import OrderedDict
+from datetime import datetime
 import json
 
 
@@ -123,7 +124,12 @@ class Report(object):
                 element = str(self.elements[level-1].id)
             else:
                 element = str(self.elements[level].id)
-            data[element] = str(row['name'])
+            
+            if element == "datetime":
+                data[element] = datetime(int(row.get('year',0)),int(row.get('month',0)),int(row.get('day',0)),int(row.get('hour',0)))
+                data["datetime_friendly"] = str(row['name'])
+            else:
+                data[element] = row['name'].encode('utf-8')
             #parse out any breakdowns and add to the data set    
             if row.has_key('breakdown'):
                 data_set.extend(self.parse_rows(row['breakdown'], level+1, data))
@@ -185,10 +191,37 @@ class Report(object):
             'metrics': ", ".join(map(str, self.metrics)), 
             'elements': ", ".join(map(str, self.elements)), 
         }
-        return "<omniture.RankedReport (metrics) {metrics} (elements) {elements}>".format(**info)
+        return "<omniture.Report (metrics) {metrics} (elements) {elements}>".format(**info)
+    
+    def __div__(self):
+        """ Give sensible options for Tab Completion mostly for iPython """
+        return ['data','dataframe', 'metrics','elements', 'segments', 'period', 'type', 'timing']
+    
+    def _repr_html_(self):
+        """ Format in HTML for iPython Users """
+        html = "<table>"
+        for index, item in enumerate(self.data):
+            html += "<tr>"
+            #populate header Row
+            if index < 1:
+                html += "<tr>"
+                if item.has_key('datetime'):
+                    html += "<td><b>{0}<b></td>".format('datetime')
+                for key in item:
+                    if key != 'datetime':
+                        html += "<td><b>{0}<b></td>".format(key)
+                html += "</tr><tr>"
+            
+            #Make sure date time is alway listed first
+            if item.has_key('datetime'):
+                html += "<td>{0}</td>".format(item['datetime'])
+            for key, value in item.iteritems():
+                if key != 'datetime':
+                    html += "<td>{0}</td>".format(value)
+        return html
     
     def __str__(self):
-        return json.dumps(self.report,indent=4, separators=(',', ': '))
+        return json.dumps(self.raw,indent=4, separators=(',', ': '))
 
 Report.method = "Queue"
     

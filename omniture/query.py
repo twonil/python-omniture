@@ -9,6 +9,8 @@ import reports
 import utils
 import json
 import logging
+import sys
+
 
 
 def immutable(method):
@@ -25,7 +27,7 @@ class Query(object):
     """ Lets you build a query to the Reporting API for Adobe Analytics.
 
     Methods in this object are chainable. For example
-    >>>  report = report.element("page").element("prop1").
+    >>> report = report.element("page").element("prop1").
         metric("pageviews").granularity("day").run()
     Making it easy to create a report.
     
@@ -106,13 +108,18 @@ class Query(object):
             })
 
         if granularity:
-            self.granularity(granularity)
+            self.raw = self.granularity(granularity).raw
 
         return self
 
     @immutable
     def granularity(self, granularity):
-        """ Set the granulartiy for the report. """
+        """ 
+        Set the granulartiy for the report. 
+        
+        Values are one of the following 
+        'hour', 'day', 'week', 'month', 'quarter', 'year'
+        """
         if granularity not in self.GRANULARITY_LEVELS:
                 levels = ", ".join(self.GRANULARITY_LEVELS)
                 raise ValueError("Granularity should be one of: " + levels)
@@ -192,6 +199,14 @@ class Query(object):
     def breakdown(self, element, **kwargs):
         """ Pass through for element. Adds an element to the report. """
         return self.element(element, **kwargs)
+    
+    def elements(self, *args):
+        """ Shortcut for adding multiple elements. Doesn't support arguments """
+        obj = self
+        for e in args:
+            obj = obj.element(e)
+            
+        return obj
 
     @immutable
     def metric(self, metric):
@@ -207,6 +222,14 @@ class Query(object):
         #self.raw['metrics'] = self._serialize_values(metric, 'metrics')
         #TODO allow this metric to accept a list
         return self
+    
+    def metrics(self, *args):
+        """ Shortcut for adding multiple metrics """
+        obj = self
+        for m in args:
+            obj = obj.metric(m)
+
+        return obj
 
     @immutable
     def sortBy(self, metric):
@@ -293,9 +316,19 @@ class Query(object):
         return self.report(response, self)
 
     #shortcut to run a report immediately
-    def run(self):
+    def run(self, defaultheartbeat=True, heartbeat=None, interval=1):
         """Shortcut for sync(). Runs the current report synchronously. """
-        return self.sync()
+        if defaultheartbeat == True:
+            rheartbeat = self.heartbeat
+        else: 
+            rheartbeat = heartbeat
+
+        return self.sync(rheartbeat, interval)
+    
+    def heartbeat(self):
+        """ A default heartbeat method that prints a dot for each request """
+        sys.stdout.write('.')
+        sys.stdout.flush()
 
     # only for SiteCatalyst queries
     def async(self, callback=None, heartbeat=None, interval=1):
@@ -318,6 +351,25 @@ class Query(object):
             return self.suite.request('Report',
                                       'CancelReport',
                                       {'reportID': self.id})
+    def json(self):
+        """ Return a JSON string of the Request """
+        return json.dumps(self.build(), indent=4, separators=(',', ': '))
 
     def __str__(self):
-        return json.dumps(self.build(), indent=4, separators=(',', ': '))
+        return self.json()
+    
+    def _repr_html_(self):
+        """ Format in HTML for iPython Users """
+        html = "Current Report Settings</br>"
+        for key, value in self.raw.iteritems():
+            html += "<b>{0}</b>: {1} </br>".format(key, value)
+        if self.id:
+            html += "This report has been submitted</br>"
+            html += "<b>{0}</b>: {1} </br>".format("ReportId", self.id)
+        return html
+    
+    def __dir__(self):
+        """ Give sensible options for Tab Completion mostly for iPython """
+        return ['async','breakdown','cancel','clone','currentData', 'element',
+                'filter', 'granularity', 'id','json' ,'metric', 'queue', 'range', 'raw', 'report',
+                'request', 'run', 'set', 'sortBy', 'suite']
