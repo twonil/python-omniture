@@ -26,7 +26,6 @@ def authenticate(username, secret=None, endpoint=Account.DEFAULT_ENDPOINT, prefi
 
 
 def queue(queries):
-    """ Runs a series of reports together """
     if isinstance(queries, dict):
         queries = queries.values()
 
@@ -72,7 +71,6 @@ def setup_logging(default_path='logging.json', default_level=logging.INFO, env_k
         with open(path, 'rt') as f:
             config = json.load(f)
         logging.config.dictConfig(config)
-        # Help the requests library play a little nicer
         requests_log = logging.getLogger("requests")
         requests_log.setLevel(logging.WARNING)
         

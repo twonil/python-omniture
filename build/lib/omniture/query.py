@@ -9,6 +9,7 @@ import reports
 import utils
 import json
 import logging
+import sys
 
 
 
@@ -315,9 +316,19 @@ class Query(object):
         return self.report(response, self)
 
     #shortcut to run a report immediately
-    def run(self, heartbeat=None, interval=1):
+    def run(self, defaultheartbeat=True, heartbeat=None, interval=1):
         """Shortcut for sync(). Runs the current report synchronously. """
-        return self.sync(heartbeat, interval)
+        if defaultheartbeat == True:
+            rheartbeat = self.heartbeat
+        else: 
+            rheartbeat = heartbeat
+
+        return self.sync(rheartbeat, interval)
+    
+    def heartbeat(self):
+        """ A default heartbeat method that prints a dot for each request """
+        sys.stdout.write('.')
+        sys.stdout.flush()
 
     # only for SiteCatalyst queries
     def async(self, callback=None, heartbeat=None, interval=1):
