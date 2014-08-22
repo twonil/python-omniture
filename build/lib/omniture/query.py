@@ -10,7 +10,6 @@ import utils
 import json
 import logging
 
-import pdb;  
 
 
 def immutable(method):
@@ -27,7 +26,7 @@ class Query(object):
     """ Lets you build a query to the Reporting API for Adobe Analytics.
 
     Methods in this object are chainable. For example
-    >>>  report = report.element("page").element("prop1").
+    >>> report = report.element("page").element("prop1").
         metric("pageviews").granularity("day").run()
     Making it easy to create a report.
     
@@ -107,7 +106,6 @@ class Query(object):
                 'dateTo': stop.isoformat(),
             })
 
-        pdb.set_trace()
         if granularity:
             self.raw = self.granularity(granularity).raw
 

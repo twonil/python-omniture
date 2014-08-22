@@ -1,6 +1,6 @@
 {
     "version": 1,
-    "disable_existing_loggers": false,
+    "disable_existing_loggers": true,
     "formatters": {
         "simple": {
             
@@ -46,6 +46,6 @@
 
     "root": {
         "level": "INFO",
-        "handlers": ["console", "info_file_handler", "error_file_handler"]
+        "handlers": ["info_file_handler", "error_file_handler"]
     }
 }

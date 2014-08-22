@@ -26,7 +26,7 @@ class Query(object):
     """ Lets you build a query to the Reporting API for Adobe Analytics.
 
     Methods in this object are chainable. For example
-    >>>  report = report.element("page").element("prop1").
+    >>> report = report.element("page").element("prop1").
         metric("pageviews").granularity("day").run()
     Making it easy to create a report.
     
