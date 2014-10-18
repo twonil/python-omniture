@@ -131,7 +131,7 @@ class Report(object):
             else:
                 data[element] = row['name'].encode('utf-8')
             #parse out any breakdowns and add to the data set    
-            if row.has_key('breakdown'):
+            if row.has_key('breakdown') and len(row['breakdown']) > 0:
                 data_set.extend(self.parse_rows(row['breakdown'], level+1, data))
             elif row.has_key('counts'):
                 for index, metric in enumerate(row['counts']):
