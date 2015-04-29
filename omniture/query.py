@@ -297,7 +297,7 @@ class Query(object):
                     #raise reports.InvalidReportError(response)
 
             #Use a back off up to five minutes to play nice with the APIs
-            if interval < 300:
+            if interval < 30:
                 interval = round(interval * 1.5)
             self.log.debug("Check Interval: %s seconds", interval)
 
