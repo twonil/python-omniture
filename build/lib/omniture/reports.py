@@ -136,7 +136,7 @@ class Report(object):
             elif row.has_key('counts'):
                 for index, metric in enumerate(row['counts']):
                         #decide what type of event
-                        if self.metrics[index].decimals > 0 or metic.find('.') >-1: 
+                        if self.metrics[index].decimals > 0 or metric.find('.') >-1: 
                             data[str(self.metrics[index].id)] = float(metric)
                         else:
                             data[str(self.metrics[index].id)] = int(metric)
