@@ -9,7 +9,8 @@ from query import Query
 import reports
 import utils
 import logging
-
+import random
+import uuid
 
 class Account(object):
     """ A wrapper for the Adobe Analytics API. Allows you to query the reporting API """
@@ -64,7 +65,7 @@ class Account(object):
         return ', '.join(header)
 
     def _build_token(self):
-        nonce = str(time.time())
+        nonce = str(uuid.uuid4())
         base64nonce = binascii.b2a_base64(binascii.a2b_qp(nonce))
         created_date = datetime.utcnow().isoformat() + 'Z'
         sha_object = sha.new(nonce + created_date + self.secret)
