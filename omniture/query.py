@@ -296,9 +296,11 @@ class Query(object):
                # if not soak and status not in ['not ready', 'done', 'ready']:
                     #raise reports.InvalidReportError(response)
 
-            #Use a back off up to five minutes to play nice with the APIs
+            #Use a back off up to 30 seconds to play nice with the APIs
             if interval < 30:
                 interval = round(interval * 1.5)
+            else:
+                intervale = 30
             self.log.debug("Check Interval: %s seconds", interval)
 
     # only for SiteCatalyst queries
