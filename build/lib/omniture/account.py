@@ -64,7 +64,7 @@ class Account(object):
             reportJSON = json.loads(reportJSON)
         suiteID = reportJSON['reportDescription']['reportSuiteID']
         suite = self.suites[suiteID]
-        return suite.report.jsonReport(reportJSON)
+        return suite.jsonReport(reportJSON)
         
 
     def _serialize_header(self, properties):
