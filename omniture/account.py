@@ -57,6 +57,15 @@ class Account(object):
                 return json_response
         else:
             return json_response
+        
+    def jsonReport(self, reportJSON):
+        """Generates a Report from the JSON (including selecting the report suite)"""
+        if type(reportJSON) == str:
+            reportJSON = json.loads(reportJSON)
+        suiteID = reportJSON['reportDescription']['reportSuiteID']
+        suite = self.suites[suiteID]
+        return suite.jsonReport(reportJSON)
+        
 
     def _serialize_header(self, properties):
         header = []
@@ -136,6 +145,64 @@ class Suite(Value):
     def report(self):
         """ Return a report to be run on this report suite """
         return Query(self)
+    
+    def jsonReport(self,reportJSON):
+        """Creates a report from JSON. Accepts either JSON or a string. Useful for deserializing requests"""
+        q = Query(self)
+        #TODO: Add a method to the Account Object to populate the report suite this call will ignore it on purpose
+        if type(reportJSON) == str:
+            reportJSON = json.loads(reportJSON)
+        
+        reportJSON = reportJSON['reportDescription']
+        
+        if reportJSON.has_key('dateFrom') and reportJSON.has_key('dateTo'):
+            q = q.range(reportJSON['dateFrom'],reportJSON['dateTo'])
+        elif reportJSON.has_key('dateFrom'):
+            q = q.range(reportJSON['dateFrom'])
+        elif reportJSON.has_key('date'):
+            q = q.range(reportJSON['date'])
+        else:
+            q = q
+        
+        if reportJSON.has_key('dateGranularity'):
+            q = q.granularity(reportJSON['dateGranularity'])
+                        
+        if reportJSON.has_key('source'):
+            q = q.set('source',reportJSON['source'])
+        
+        if reportJSON.has_key('metrics'):
+            for m in reportJSON['metrics']:
+                q = q.metric(m['id'])
+        
+        if reportJSON.has_key('elements'):
+            for e in reportJSON['elements']:
+                id = e['id']
+                del e['id']
+                q= q.element(id, **e)
+        
+        if reportJSON.has_key('locale'):
+            q = q.set('locale',reportJSON['locale'])
+                        
+        if reportJSON.has_key('sortMethod'):
+            q = q.set('sortMethod',reportJSON['sortMethod'])
+                        
+        if reportJSON.has_key('sortBy'):
+            q = q.sortBy(reportJSON['sortBy'])
+        
+        #WARNING This doesn't carry over segment IDs meaning you can't manipulate the segments in the new object
+        #TODO Loop through and add segment ID with filter method (need to figure out how to handle combined)
+        if reportJSON.has_key('segments'):
+            q = q.set('segments', reportJSON['segments'])
+        
+        if reportJSON.has_key('anomalyDetection'):
+            q = q.set('anomalyDetection',reportJSON['anomalyDetection'])
+                      
+        if reportJSON.has_key('currentData'):
+            q = q.set('currentData',reportJSON['currentData'])            
+
+        if reportJSON.has_key('elementDataEncoding'):
+            q = q.set('elementDataEncoding',reportJSON['elementDataEncoding'])            
+        return q
     
     def _repr_html_(self):
         """ Format in HTML for iPython Users """

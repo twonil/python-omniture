@@ -163,6 +163,28 @@ In these cases, it can be useful to use the lower-level access this module provi
     print query
 ```
 
+
+### JSON Reports
+The underlying API is a JSON API. At anytime you can get a string representation of the report that you are created by calling report.json(). 
+
+```python
+    json_string = suite.report.element('pageviews').json()
+```
+
+That JSON can be used in the [API explorer](https://marketing.adobe.com/developer/api-explorer). You have have it formatted nice and printed out without the unicode representations if you use the following 
+
+```python 
+    print suite.report.element('pageviews')
+```
+
+You can also create a report from JSON or a string representation of JSON. 
+
+```python
+    report = suite.jsonReport("{'reportDescription':{'reportSuiteID':'foo'}}")
+```
+
+These two functions allow you to serialize and unserialize reports which can be helpful to re-run reports that error out. 
+
 ### Running multiple reports
 
 If you're interested in automating a large number of reports, you can speed up the 

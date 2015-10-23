@@ -355,7 +355,7 @@ class Query(object):
                                       {'reportID': self.id})
     def json(self):
         """ Return a JSON string of the Request """
-        return json.dumps(self.build(), indent=4, separators=(',', ': '))
+        return str(json.dumps(self.build(), indent=4, separators=(',', ': ')))
 
     def __str__(self):
         return self.json()
