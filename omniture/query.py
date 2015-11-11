@@ -300,7 +300,7 @@ class Query(object):
             if interval < 30:
                 interval = round(interval * 1.5)
             else:
-                intervale = 30
+                interval = 30
             self.log.debug("Check Interval: %s seconds", interval)
 
     # only for SiteCatalyst queries
