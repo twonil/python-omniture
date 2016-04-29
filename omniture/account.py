@@ -4,6 +4,7 @@ import time
 import sha
 import json
 from datetime import datetime
+from datetime import date
 from elements import Value, Element, Segment
 from query import Query
 import reports
@@ -11,6 +12,8 @@ import utils
 import logging
 import random
 import uuid
+import os
+import ast
 
 class Account(object):
     """ A wrapper for the Adobe Analytics API. Allows you to query the reporting API """
@@ -22,7 +25,31 @@ class Account(object):
         self.username = username
         self.secret = secret
         self.endpoint = endpoint
-        data = self.request('Company', 'GetReportSuites')['report_suites']
+        self.file_date = date.today().isoformat()
+        self.file_path = os.path.dirname(os.path.realpath(__file__))
+        # data = self.request('Company', 'GetReportSuites')['report_suites']
+
+        try:
+            with open(self.file_path+'/data_reports_'+self.file_date+'.txt') as fp:
+                for line in fp:
+                    if line:
+                        data = ast.literal_eval(line)
+        
+        except IOError as e:
+            data = self.request('Company', 'GetReportSuites')['report_suites']
+            
+            # Capture all other old text files
+            filelist = [f for f in os.listdir(self.file_path) if f.startswith('data_reports')]
+
+            # Delete them
+            for f in filelist:
+                os.remove(self.file_path+'/'+f)
+
+            # Build the new data
+            the_file = open(self.file_path+'/data_reports_'+self.file_date+'.txt', 'w')
+            the_file.write(str(data))
+            the_file.close()
+        
         suites = [Suite(suite['site_title'], suite['rsid'], self) for suite in data]
         self.suites = utils.AddressableList(suites)
         
@@ -119,26 +146,92 @@ class Suite(Value):
         self.log = logging.getLogger(__name__)
         super(Suite, self).__init__(title, id, account)
         self.account = account
+        # To minimize expensive requests, you need these
+        self.file_date = date.today().isoformat()
+        self.file_path = os.path.dirname(os.path.realpath(__file__))
 
     @property
     @utils.memoize
     def metrics(self):
         """ Return the list of valid metricsfor the current report suite"""
-        data = self.request('Report', 'GetMetrics')
+        
+        # Do not make expensive requests every time you query and update the data by day
+        try:
+            with open(self.file_path+'/data_metrics_'+self.file_date+'.txt') as fp:
+                for line in fp:
+                    if line:
+                        data = ast.literal_eval(line)
+        except IOError as e:
+            data = self.request('Report', 'GetMetrics')
+            
+            # Capture all other old text files
+            filelist = [f for f in os.listdir(self.file_path) if f.startswith('data_metrics')]
+
+            # Delete them
+            for f in filelist:
+                os.remove(self.file_path+'/'+f)
+
+            # Build the new data
+            the_file = open(self.file_path+'/data_metrics_'+self.file_date+'.txt', 'w')
+            the_file.write(str(data))
+            the_file.close()
+
         return Value.list('metrics', data, self, 'name', 'id')
 
     @property
     @utils.memoize
     def elements(self):
         """ Return the list of valid elementsfor the current report suite """
-        data = self.request('Report', 'GetElements')
+        
+        # Do not make expensive requests every time you query and update the data by day
+        try:
+            with open(self.file_path+'/data_elements_'+self.file_date+'.txt') as fp:
+                for line in fp:
+                    if line:
+                        data = ast.literal_eval(line)
+        except IOError as e:
+            # Collect the data
+            data = self.request('Report', 'GetElements')
+
+            # Capture all other old text files
+            filelist = [f for f in os.listdir(self.file_path) if f.startswith('data_elements')]
+
+            # Delete them
+            for f in filelist:
+                os.remove(self.file_path+'/'+f)
+
+            # Build the new data
+            the_file = open(self.file_path+'/data_elements_'+self.file_date+'.txt', 'w')
+            the_file.write(str(data))
+            the_file.close()
+
         return Element.list('elements', data, self, 'name', 'id')
 
     @property
     @utils.memoize
     def segments(self):
         """ Return the list of valid segments for the current report suite """
-        data = self.request('Segments', 'Get')
+        # Do not make expensive requests every time you query and update the data by day
+        try:
+            with open(self.file_path+'/data_segments_'+self.file_date+'.txt') as fp:
+                for line in fp:
+                    if line:
+                        data = ast.literal_eval(line)
+        except IOError as e:
+            data = self.request('Segments', 'Get')
+            
+            # Capture all other old text files
+            filelist = [f for f in os.listdir(self.file_path) if f.startswith('data_segments')]
+
+            # Delete them
+            for f in filelist:
+                os.remove(self.file_path+'/'+f)
+
+            # Build the new data
+            the_file = open(self.file_path+'/data_segments_'+self.file_date+'.txt', 'w')
+            the_file.write(str(data))
+            the_file.close()
+
         return Segment.list('segments', data, self, 'name', 'id')
 
     @property
