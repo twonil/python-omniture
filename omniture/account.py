@@ -4,6 +4,7 @@ import time
 import sha
 import json
 from datetime import datetime
+from datetime import date
 from elements import Value, Element, Segment
 from query import Query
 import reports
@@ -11,20 +12,63 @@ import utils
 import logging
 import random
 import uuid
+import hashlib
+import base64
 
 class Account(object):
     """ A wrapper for the Adobe Analytics API. Allows you to query the reporting API """
     DEFAULT_ENDPOINT = 'https://api.omniture.com/admin/1.4/rest/'
 
-    def __init__(self, username, secret, endpoint=DEFAULT_ENDPOINT):
+    def __init__(self, username, secret, endpoint=DEFAULT_ENDPOINT, cache=False, cache_key=None):
         """Authentication to make requests."""
         self.log = logging.getLogger(__name__)
         self.username = username
         self.secret = secret
         self.endpoint = endpoint
-        data = self.request('Company', 'GetReportSuites')['report_suites']
+        #Allow someone to set a custom cache key
+        self.cache = cache
+        if cache_key:
+            self.cache_key = cache_key
+        else:
+            self.cache_key = date.today().isoformat()
+        if self.cache:
+            data = self.request_cached('Company', 'GetReportSuites')['report_suites']
+        else:
+            data = self.request('Company', 'GetReportSuites')['report_suites']
         suites = [Suite(suite['site_title'], suite['rsid'], self) for suite in data]
         self.suites = utils.AddressableList(suites)
+        
+    def request_cached(self, api, method, query={}, cache_key=None):
+        if cache_key:
+            key = cache_key
+        else:
+            key = self.cache_key
+        
+        #Generate a shortened hash of the query string so that method don't collide
+        query_hash = base64.urlsafe_b64encode(hashlib.md5(query).digest())
+        
+        try:
+            with open(self.file_path+'/data_'+api+'_'+method+'_'+query_hash+'_'+key+'.txt') as fp:
+                for line in fp:
+                    if line:
+                        data = ast.literal_eval(line)
+        
+        except IOError as e:
+            data = self.request(api, method, query)
+            
+            # Capture all other old text files
+            #TODO decide if the query should be included in the file list to be cleared out when the cache key changes
+            filelist = [f for f in os.listdir(self.file_path) if f.startswith('data_'+api+'_'+method)]
+
+            # Delete them
+            for f in filelist:
+                os.remove(self.file_path+'/'+f)
+
+            # Build the new data
+            the_file = open(self.file_path+'/data_'+api+'_'+method+'_'+query_hash+'_'+key+'.txt', 'w')
+            the_file.write(str(data))
+            the_file.close()
+        
         
     def request(self, api, method, query={}):
         """
@@ -115,7 +159,7 @@ class Suite(Value):
 
         return self.account.request(api, method, raw_query)
 
-    def __init__(self, title, id, account):
+    def __init__(self, title, id, account, cache=False):
         self.log = logging.getLogger(__name__)
         super(Suite, self).__init__(title, id, account)
         self.account = account
@@ -124,21 +168,30 @@ class Suite(Value):
     @utils.memoize
     def metrics(self):
         """ Return the list of valid metricsfor the current report suite"""
-        data = self.request('Report', 'GetMetrics')
+        if self.account.cache:
+            data = self.request_cache('Report', 'GetMetrics')
+        else:
+            data = self.request('Report', 'GetMetrics')
         return Value.list('metrics', data, self, 'name', 'id')
 
     @property
     @utils.memoize
     def elements(self):
         """ Return the list of valid elementsfor the current report suite """
-        data = self.request('Report', 'GetElements')
+        if self.account.cache:
+            data = self.request_cached('Report', 'GetElements')
+        else:
+            data = self.request('Report', 'GetElements')
         return Element.list('elements', data, self, 'name', 'id')
 
     @property
     @utils.memoize
     def segments(self):
         """ Return the list of valid segments for the current report suite """
-        data = self.request('Segments', 'Get')
+        if self.account.cache:
+            data = self.request_cached('Segments', 'Get')
+        else:
+            data = self.request('Segments', 'Get')
         return Segment.list('segments', data, self, 'name', 'id')
 
     @property
