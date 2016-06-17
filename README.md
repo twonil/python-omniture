@@ -87,13 +87,19 @@ Here are the options you can add to a report.
 
 **element()** - `element('element_id or element_name', **kwargs)` Adds an element to the report. If you need to pass in additional information in to the element (e.g. `top` or `startingWith` or `classification`) you can use the kwargs to do so. A full list of options available is documented [here](https://marketing.adobe.com/developer/en_US/documentation/analytics-reporting-1-4/r-reportdescriptionelement). If multiple elements are present then they are broken-down by one another
 
+_Note: to disable the ID check add the parameter `disable_validation=True`_
+
 **breakdown()** - `breakdown('element_id or element_name', **kwargs)` Same as element. It is included to make report queries more readable when there are multiple element. Use when there are more than one element. eg. 
 
 ```python
     report = suite.report.element('evar1').breakdown('evar2')
 ```
 
+_Note: to disable the ID check add the parameter `disable_validation=True`_
+
 **metric()** - `metric('metric')` Adds a metric to the report. Can be called multiple times to add multiple metrics if needed. 
+
+_Note: to disable the ID check add the parameter `disable_validation=True`_
 
 **range()** - `range('start', 'end=None', 'months=0', 'days=0', 'granularity=None')` Sets the date range for the report. All dates shoudl be listed in ISO-8601 (e.g. 'YYYY-MM-DD')
 
@@ -114,6 +120,7 @@ Here are the options you can add to a report.
     report = suite.report.filter('537d509ee4b0893ab30616c7')\
         .filter(element='page', selected=['homepage'])
 ```
+_Note: to disable the ID check add the parameter `disable_validation=True`_
 
 **currentData()** --`currentData()` Set the currentData flag
 
@@ -185,6 +192,22 @@ You can also create a report from JSON or a string representation of JSON.
 
 These two functions allow you to serialize and unserialize reports which can be helpful to re-run reports that error out. 
 
+
+### Removing client side validation to increase performance
+The library checks to make sure the elements, metrics and segments are all valid before submitting the report to the server. To validate these the library will make an API call to get the elements, metrics and segments. The library is pretty effecient with the API calls meaning it will only request them when needed and it will cache the request for subsequent calls. However, if you are running a script on a daily basis the with the same metrics, dimensions and segments this check can be redundant, especially if you are running reports across multiple report suites. To disable this check you woudl add the `disable_validation=True` parameter to the method calls. Here is how you would do it. 
+
+```python
+
+suite.report.metric("page",disable_validation=True).run()
+suite.report.element("pageviews",disable_validation=True).run()
+suite.report.filter("somesegmentID",disable_validation=True).run()
+
+```
+
+One thing to note is that this method only support the IDs and not the friendly names and it still requires that those IDs be valid (the server still checks them).
+
+
+
 ### Running multiple reports
 
 If you're interested in automating a large number of reports, you can speed up the 
@@ -236,3 +259,6 @@ If you want to run unit tests
 ```bash
     python testAll.py
 ```
+
+Contributers
+* Special Thanks to [adibbehjat](https://github.com/adibbehjat() for helping think through the client side validation and when to skip it
