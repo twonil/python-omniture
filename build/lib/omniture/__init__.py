@@ -7,6 +7,7 @@ from reports import InvalidReportError, Report, DataWarehouseReport
 import os
 import json
 import logging.config
+from .version import __version__
 
 def authenticate(username, secret=None, endpoint=Account.DEFAULT_ENDPOINT, prefix='', suffix=''):
     """ Authenticate to the Adobe API using WSSE """
