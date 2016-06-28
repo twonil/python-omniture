@@ -14,7 +14,7 @@ Through PyPI (older version):
 
 Latest and greatest: 
 
-    pip install git+http://github.com/dancingcactus/python-omniture.git 
+    pip install git+http://github.com/stdbrouw/python-omniture.git 
 
 ## Authentication
 
