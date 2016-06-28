@@ -24,8 +24,8 @@ class InvalidReportError(Exception):
     def __init__(self, error):
         self.log = logging.getLogger(__name__)
         error = self.normalize(error)
-        message = "{error}: {error_description} ({error_uri})".format(**error)
-        super(InvalidReportError, self).__init__(message)
+        self.message = "{error}: {error_description} ({error_uri})".format(**error)
+        super(InvalidReportError, self).__init__(self.message)
         
 class ReportNotReadyError(Exception):
     """ Exception that is raised when a report is not ready to be downloaded

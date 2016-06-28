@@ -153,7 +153,7 @@ class Query(object):
         return self
 
     @immutable
-    def filter(self, segment=None, segments=None, **kwargs):
+    def filter(self, segment=None, segments=None, disable_validation=False, **kwargs):
         """ Set Add a segment to the report. """
         # It would appear to me that 'segment_id' has a strict subset
         # of the functionality of 'segments', but until I find out for
@@ -161,20 +161,30 @@ class Query(object):
         if not self.raw.has_key('segments'):
             self.raw['segments'] = []
         
-        if segments:
-            self.raw['segments'].append(self._serialize_values(segments, 'segments'))
-        elif segment:
-            self.raw['segments'].append({"id":self._normalize_value(segment,
-                                                           'segments').id})
-        elif kwargs:
-            self.raw['segments'].append(kwargs)
+        if disable_validation == False:
+            if segments:
+                self.raw['segments'].append(self._serialize_values(segments, 'segments'))
+            elif segment:
+                self.raw['segments'].append({"id":self._normalize_value(segment,
+                                                                            'segments').id})
+            elif kwargs:
+                self.raw['segments'].append(kwargs)
+            else:
+                raise ValueError()
+        
         else:
-            raise ValueError()
-
+            if segments:
+                self.raw['segments'].append(segments)
+            elif segment:
+                self.raw['segments'].append({"id":segment})
+            elif kwargs:
+                self.raw['segments'].append(kwargs)
+            else:
+                raise ValueError()
         return self
 
     @immutable
-    def element(self, element, **kwargs):
+    def element(self, element, disable_validation=False, **kwargs):
         """
         Add an element to the report.
 
@@ -186,8 +196,11 @@ class Query(object):
         if self.raw.get('elements', None) == None:
             self.raw['elements'] = []
 
-        element = self._serialize_value(element, 'elements')
-
+        if disable_validation == False:
+            element = self._serialize_value(element, 'elements')
+        else:
+            element = {"id":element}
+        
         if kwargs != None:
             element.update(kwargs)
         self.raw['elements'].append(element)
@@ -200,16 +213,16 @@ class Query(object):
         """ Pass through for element. Adds an element to the report. """
         return self.element(element, **kwargs)
     
-    def elements(self, *args):
+    def elements(self, *args, **kwargs):
         """ Shortcut for adding multiple elements. Doesn't support arguments """
         obj = self
         for e in args:
-            obj = obj.element(e)
+            obj = obj.element(e, **kwargs)
             
         return obj
 
     @immutable
-    def metric(self, metric):
+    def metric(self, metric, disable_validation=False):
         """
         Add an metric to the report.
 
@@ -218,16 +231,19 @@ class Query(object):
         """
         if self.raw.get('metrics', None) == None:
             self.raw['metrics'] = []
-        self.raw['metrics'].append(self._serialize_value(metric, 'metrics'))
+        if disable_validation == False:
+            self.raw['metrics'].append(self._serialize_value(metric, 'metrics'))
+        else:
+            self.raw['metrics'].append({"id":metric})
         #self.raw['metrics'] = self._serialize_values(metric, 'metrics')
         #TODO allow this metric to accept a list
         return self
     
-    def metrics(self, *args):
+    def metrics(self, *args, **kwargs):
         """ Shortcut for adding multiple metrics """
         obj = self
         for m in args:
-            obj = obj.metric(m)
+            obj = obj.metric(m, **kwargs)
 
         return obj
 
@@ -251,6 +267,7 @@ class Query(object):
         # TODO: haven't figured out how breakdowns work yet
         self.raw['breakdowns'] = False
         return self
+    
 
     def build(self):
         """ Return the report descriptoin as an object """
