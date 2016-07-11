@@ -5,4 +5,7 @@ install:
     - pip install .
     - pip install -r requirements.txt
 
-script: python -m unittest testAll.py
+script: 
+    - print $OMNITURE_USERNAME
+    - python -m unittest testAll.py
+    
