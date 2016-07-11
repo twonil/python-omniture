@@ -1,0 +1,8 @@
+language: python
+python:
+    - "2.7"
+    
+install: 
+    - pip install git+http://github.com/dancingcactus/python-omniture.git 
+
+script: python testAll.py
