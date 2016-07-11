@@ -18,4 +18,4 @@ mySuite = test_suite()
 
 runner = unittest.TextTestRunner()
 ret = runner.run(mySuite).wasSuccessful()
-sys.exit(ret)
+sys.exit(not ret)
