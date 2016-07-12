@@ -1,6 +1,8 @@
 language: python
 python:
     - "2.7"
+cache:
+    - pip
 install: 
     - pip install codecov
     - pip install .
@@ -9,5 +11,6 @@ install:
 script: 
     - python -m unittest testAll
 after_success:
-    codecov
+    - codecov
+    
     
