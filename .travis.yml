@@ -3,11 +3,12 @@ python:
     - "2.7"
 cache:
     - pip
+before_install:
+    - export TZ=America/Denver
 install: 
     - pip install codecov
     - pip install .
     - pip install -r requirements.txt
-
 script: 
     - python -m unittest testAll
 after_success:
