@@ -2,6 +2,7 @@ import unittest
 from testaccountUnit import AccountUnitTest
 from testQuery import QueryTest
 from testReports import ReportTest
+import sys
 
 
 def test_suite():
@@ -16,4 +17,5 @@ def test_suite():
 mySuite = test_suite()
 
 runner = unittest.TextTestRunner()
-runner.run(mySuite)
+ret = runner.run(mySuite).wasSuccessful()
+sys.exit(not ret)
