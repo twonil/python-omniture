@@ -9,6 +9,7 @@ import pprint
 creds = {}
 creds['username'] = os.environ['OMNITURE_USERNAME']
 creds['secret'] = os.environ['OMNITURE_SECRET']
+testReportSuite = "omniture.api-gateway"
 
 
 class AccountUnitTest(unittest.TestCase):
@@ -54,6 +55,11 @@ class AccountUnitTest(unittest.TestCase):
         queue.append(report)
         response = omniture.sync(queue)
         self.assertIsInstance(response, list)
+        
+    def test_json_report(self):
+        """Make sure reports can be generated from JSON objects"""
+        report = self.analytics.suites[testReportSuite].report.element('page').metric('pageviews').json()
+        self.assertEqual(report, self.analytics.jsonReport(report).json(), "The reports aren't serializating or de-serializing correctly in JSON")
         
 if __name__ == '__main__':
     unittest.main()
