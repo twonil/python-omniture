@@ -12,6 +12,7 @@ def test_suite():
     test_suite.addTest(unittest.makeSuite(AccountUnitTest))
     test_suite.addTest(unittest.makeSuite(QueryTest))
     test_suite.addTest(unittest.makeSuite(ReportTest))
+
     return test_suite
 
 mySuite = test_suite()
