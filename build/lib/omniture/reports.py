@@ -129,7 +129,12 @@ class Report(object):
                 data[element] = datetime(int(row.get('year',0)),int(row.get('month',0)),int(row.get('day',0)),int(row.get('hour',0)))
                 data["datetime_friendly"] = str(row['name'])
             else:
-                data[element] = row['name'].encode('utf-8')
+                try:
+                    data[element] = row['name'].encode('utf-8')
+
+                # If the name value is Null or non-encodable value, return null
+                except:
+                    data[element] = "null"
             #parse out any breakdowns and add to the data set    
             if row.has_key('breakdown') and len(row['breakdown']) > 0:
                 data_set.extend(self.parse_rows(row['breakdown'], level+1, data))
