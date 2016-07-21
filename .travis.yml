@@ -9,8 +9,10 @@ install:
     - pip install codecov
     - pip install .
     - pip install -r requirements.txt
+    - pip install --allow-external --allow-insecure --find-links http://wheels.astropy.org/ --find-links http://wheels2.astropy.org/ --use-wheel "pandas>=0.14.1"
 script:
-    - coverage run testAll.py && pylint --errors-only  omniture/.
+    - coverage run testAll.py
+    - pylint --errors-only  omniture/.
 after_success:
      bash <(curl -s https://codecov.io/bash)
      codecov
