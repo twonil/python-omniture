@@ -8,8 +8,9 @@ cache:
 before_install:
     - export TZ=America/Denver
 install:
-    - pip install codecov
-    - pip install pylint
+    - pip install pip --upgrade
+    - pip install codecov --cache-dir $HOME/.pip-cache --only-binary pandas
+    - pip install pylint --cache-dir $HOME/.pip-cache --only-binary pandas
     - pip install .
     - pip install -r requirements.txt --cache-dir $HOME/.pip-cache --only-binary pandas
 
