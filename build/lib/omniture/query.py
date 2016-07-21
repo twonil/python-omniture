@@ -1,7 +1,7 @@
 # encoding: utf-8
 
 import time
-from copy import copy
+from copy import copy,deepcopy
 import functools
 from dateutil.relativedelta import relativedelta
 from elements import Value, Element, Segment
@@ -30,8 +30,8 @@ class Query(object):
     >>> report = report.element("page").element("prop1").
         metric("pageviews").granularity("day").run()
     Making it easy to create a report.
-    
-    To see the raw definition use 
+
+    To see the raw definition use
     >>> print report
     """
 
@@ -114,10 +114,10 @@ class Query(object):
 
     @immutable
     def granularity(self, granularity):
-        """ 
-        Set the granulartiy for the report. 
-        
-        Values are one of the following 
+        """
+        Set the granulartiy for the report.
+
+        Values are one of the following
         'hour', 'day', 'week', 'month', 'quarter', 'year'
         """
         if granularity not in self.GRANULARITY_LEVELS:
@@ -160,7 +160,7 @@ class Query(object):
         # sure, I'll provide both options.
         if not self.raw.has_key('segments'):
             self.raw['segments'] = []
-        
+
         if disable_validation == False:
             if segments:
                 self.raw['segments'].append(self._serialize_values(segments, 'segments'))
@@ -171,7 +171,7 @@ class Query(object):
                 self.raw['segments'].append(kwargs)
             else:
                 raise ValueError()
-        
+
         else:
             if segments:
                 self.raw['segments'].append(segments)
@@ -200,10 +200,10 @@ class Query(object):
             element = self._serialize_value(element, 'elements')
         else:
             element = {"id":element}
-        
+
         if kwargs != None:
             element.update(kwargs)
-        self.raw['elements'].append(element)
+        self.raw['elements'].append(deepcopy(element))
 
         #TODO allow this method to accept a list
         return self
@@ -212,13 +212,13 @@ class Query(object):
     def breakdown(self, element, **kwargs):
         """ Pass through for element. Adds an element to the report. """
         return self.element(element, **kwargs)
-    
+
     def elements(self, *args, **kwargs):
         """ Shortcut for adding multiple elements. Doesn't support arguments """
         obj = self
         for e in args:
             obj = obj.element(e, **kwargs)
-            
+
         return obj
 
     @immutable
@@ -238,7 +238,7 @@ class Query(object):
         #self.raw['metrics'] = self._serialize_values(metric, 'metrics')
         #TODO allow this metric to accept a list
         return self
-    
+
     def metrics(self, *args, **kwargs):
         """ Shortcut for adding multiple metrics """
         obj = self
@@ -267,7 +267,7 @@ class Query(object):
         # TODO: haven't figured out how breakdowns work yet
         self.raw['breakdowns'] = False
         return self
-    
+
 
     def build(self):
         """ Return the report descriptoin as an object """
@@ -339,11 +339,11 @@ class Query(object):
         """Shortcut for sync(). Runs the current report synchronously. """
         if defaultheartbeat == True:
             rheartbeat = self.heartbeat
-        else: 
+        else:
             rheartbeat = heartbeat
 
         return self.sync(rheartbeat, interval)
-    
+
     def heartbeat(self):
         """ A default heartbeat method that prints a dot for each request """
         sys.stdout.write('.')
@@ -376,7 +376,7 @@ class Query(object):
 
     def __str__(self):
         return self.json()
-    
+
     def _repr_html_(self):
         """ Format in HTML for iPython Users """
         html = "Current Report Settings</br>"
@@ -386,7 +386,7 @@ class Query(object):
             html += "This report has been submitted</br>"
             html += "<b>{0}</b>: {1} </br>".format("ReportId", self.id)
         return html
-    
+
     def __dir__(self):
         """ Give sensible options for Tab Completion mostly for iPython """
         return ['async','breakdown','cancel','clone','currentData', 'element',
