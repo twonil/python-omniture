@@ -242,7 +242,7 @@ class QueryTest(unittest.TestCase):
             .element("page", classification= "test2")
 
         self.assertEqual("test",  report.raw['elements'][0]['classification'],"The classifications aren't getting set right")
-        self.assertEqual("test",  report.raw['elements'][1]['classification'],"The second classification isn't getting set right")    
+        self.assertEqual("test2",  report.raw['elements'][1]['classification'],"The second classification isn't getting set right")    
 
 if __name__ == '__main__':
     unittest.main()
