@@ -108,10 +108,12 @@ class ReportTest(unittest.TestCase):
     def test_multiple_classifications(self, m):
         """Makes sure the report can parse multiple classifications correctly since they have the same element ID"""
         #load sample file
-        with open('mock_objects/multi_classifications.json') as data_file:
+        path = os.path.dirname(__file__)
+
+        with open(path+'/mock_objects/multi_classifications.json') as data_file:
             json_response = data_file.read()
 
-        with open('mock_objects/Report.Queue.json') as queue_file:
+        with open(path+'/mock_objects/Report.Queue.json') as queue_file:
             ReportQueue = queue_file.read().replace('\n', '')
 
         #setup mock object
