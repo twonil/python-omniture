@@ -143,7 +143,7 @@ If you need an easy way to access the data in a report:
 
 ```python
     data = report.data
-```    
+```
 
 This will generate a list of dicts with the metrics and elements called out by id.
 
@@ -264,6 +264,6 @@ If you want to run unit tests
 ```
 
 Contributers
-* Special Thanks to
-- [adibbehjat](https://github.com/adibbehjat) for helping think through the client side validation and when to skip it
-- [aarontoledo](https://github.com/aarontoledo) for helping with the dreaded classificaitons bug
+Special Thanks to
+* [adibbehjat](https://github.com/adibbehjat) for helping think through the client side validation and when to skip it
+* [aarontoledo](https://github.com/aarontoledo) for helping with the dreaded classificaitons bug
