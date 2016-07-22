@@ -128,6 +128,7 @@ class ReportTest(unittest.TestCase):
         print report
         report = report.run()
         print report
+        print report.elements[0].classification
 
         self.assertTrue('evar2 | Classification 1' in report.data[0], "The Value of report.data[0] was:{}".format(report.data[0]))
         self.assertTrue('evar2 | Classification 2' in report.data[0], "The Value of report.data[0] was:{}".format(report.data[0]))
