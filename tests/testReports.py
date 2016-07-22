@@ -114,7 +114,7 @@ class ReportTest(unittest.TestCase):
             json_response = data_file.read()
 
         with open(path+'/mock_objects/Report.Queue.json') as queue_file:
-            ReportQueue = queue_file.read().replace('\n', '')
+            ReportQueue = queue_file.read()
 
         #setup mock object
         m.post('https://api.omniture.com/admin/1.4/rest/?method=Company.GetReportSuites', text=json_response)
@@ -124,10 +124,13 @@ class ReportTest(unittest.TestCase):
         report = self.analytics.suites[0].report\
             .element('evar2',classification="Classification 1", disable_validation=True)\
             .element('evar2',classification="Classification 2", disable_validation=True)\
-            .run()
+
+        print report
+        report = report.run()
+        print report
 
         self.assertTrue('evar2 | Classification 1' in report.data[0], "The Value of report.data[0] was:{}".format(report.data[0]))
-        self.assertTrue('evar2 | Classification 2' in report.data[0])
+        self.assertTrue('evar2 | Classification 2' in report.data[0], "The Value of report.data[0] was:{}".format(report.data[0]))
 
 
 
