@@ -1,9 +1,11 @@
 # encoding: utf-8
+from __future__ import absolute_import
 
-from elements import Value
 import logging
 from datetime import datetime
 import json
+
+from .elements import Value
 
 
 class InvalidReportError(Exception):

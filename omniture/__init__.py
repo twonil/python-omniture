@@ -1,13 +1,17 @@
 # encoding: utf-8
+from __future__ import absolute_import
 
-from account import Account, Suite
-from elements import Value, Element, Segment
-from query import Query
-from reports import InvalidReportError, Report, DataWarehouseReport
 import os
 import json
 import logging.config
+
+from .account import Account, Suite
+from .elements import Value, Element, Segment
+from .query import Query
+from .reports import InvalidReportError, Report, DataWarehouseReport
 from .version import __version__
+from . import utils
+
 
 def authenticate(username, secret=None, endpoint=Account.DEFAULT_ENDPOINT, prefix='', suffix=''):
     """ Authenticate to the Adobe API using WSSE """

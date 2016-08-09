@@ -1,16 +1,17 @@
 # encoding: utf-8
+from __future__ import absolute_import
 
 import time
-from copy import copy,deepcopy
+from copy import copy, deepcopy
 import functools
 from dateutil.relativedelta import relativedelta
-from elements import Value
-import reports
-import utils
 import json
 import logging
 import sys
 
+from .elements import Value
+from . import reports
+from . import utils
 
 
 def immutable(method):

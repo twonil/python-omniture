@@ -1,17 +1,20 @@
+from __future__ import absolute_import
+
 import requests
 import binascii
 import sha
 import json
-from datetime import datetime
-from datetime import date
-from elements import Value, Element, Segment
-from query import Query
-import reports
-import utils
+from datetime import datetime, date
 import logging
 import uuid
 import hashlib
 import base64
+import os
+
+from .elements import Value, Element, Segment
+from .query import Query
+from . import reports
+from . import utils
 
 
 class Account(object):

@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+
 import copy
 import datetime
 from dateutil.parser import parse as parse_date
