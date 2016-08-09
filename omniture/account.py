@@ -1,6 +1,5 @@
 import requests
 import binascii
-import time
 import sha
 import json
 from datetime import datetime
@@ -10,10 +9,10 @@ from query import Query
 import reports
 import utils
 import logging
-import random
 import uuid
 import hashlib
 import base64
+
 
 class Account(object):
     """ A wrapper for the Adobe Analytics API. Allows you to query the reporting API """

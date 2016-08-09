@@ -2,16 +2,12 @@
 
 import unittest
 import omniture
-import sys
 import os
-from collections import OrderedDict
 from datetime import date
 import pandas
-from pprint import pprint
-import inspect
 import datetime
 import requests_mock
-import json
+
 
 creds = {}
 creds['username'] = os.environ['OMNITURE_USERNAME']

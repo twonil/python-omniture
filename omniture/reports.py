@@ -1,9 +1,7 @@
 # encoding: utf-8
 
-from elements import Value, Element, Segment
-import utils
+from elements import Value
 import logging
-from collections import OrderedDict
 from datetime import datetime
 import json
 
