@@ -72,7 +72,7 @@ def date(obj):
     if obj is None:
         return None
     elif isinstance(obj, datetime.date):
-        if hasattr(dt, 'date'):
+        if hasattr(obj, 'date'):
             return obj.date()
         else:
             return obj
