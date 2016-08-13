@@ -1,7 +1,8 @@
+from __future__ import absolute_import
+
 import copy
 import datetime
 from dateutil.parser import parse as parse_date
-import logging
 
 
 class memoize:
@@ -71,7 +72,7 @@ def date(obj):
     if obj is None:
         return None
     elif isinstance(obj, datetime.date):
-        if hasattr(dt, 'date'):
+        if hasattr(obj, 'date'):
             return obj.date()
         else:
             return obj
