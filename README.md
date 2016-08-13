@@ -104,7 +104,7 @@ _Note: to disable the ID check add the parameter `disable_validation=True`_
 
 _Note: to disable the ID check add the parameter `disable_validation=True`_
 
-**range()** - `range('start', 'end=None', 'months=0', 'days=0', 'granularity=None')` Sets the date range for the report. All dates shoudl be listed in ISO-8601 (e.g. 'YYYY-MM-DD')
+**range()** - `range('start', 'stop=None', 'months=0', 'days=0', 'granularity=None')` Sets the date range for the report. All dates shoudl be listed in ISO-8601 (e.g. 'YYYY-MM-DD')
 
 * **Start**  --  Start date for the report. If no stop date is specified then the report will be for a single day
 * **Stop** -- End date for the report.

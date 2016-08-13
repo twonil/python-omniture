@@ -2,9 +2,7 @@
 
 import unittest
 import omniture
-import sys
 import os
-import pprint
 
 creds = {}
 creds['username'] = os.environ['OMNITURE_USERNAME']
