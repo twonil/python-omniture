@@ -16,7 +16,7 @@ class AccountUnitTest(unittest.TestCase):
 
     def test_suites(self):
         self.assertIsInstance(self.analytics.suites, omniture.utils.AddressableList, "There are no suites being returned")
-        self.assertIsInstance(self.analytics.suites[0], omniture.account.Suite, "There are no suites being returned")
+        self.assertIsInstance(self.analytics.suites[testReportSuite], omniture.account.Suite, "There are no suites being returned")
 
     def test_simple_request(self):
         """ simplest request possible. Company.GetEndpoint is not an authenticated method
@@ -38,17 +38,17 @@ class AccountUnitTest(unittest.TestCase):
     def test_metrics(self):
         """ Makes sure the suite properties can get the list of metrics
         """
-        self.assertIsInstance(self.analytics.suites[0].metrics, omniture.utils.AddressableList)
+        self.assertIsInstance(self.analytics.suites[testReportSuite].metrics, omniture.utils.AddressableList)
 
     def test_elements(self):
         """ Makes sure the suite properties can get the list of elements
         """
-        self.assertIsInstance(self.analytics.suites[0].elements, omniture.utils.AddressableList)
+        self.assertIsInstance(self.analytics.suites[testReportSuite].elements, omniture.utils.AddressableList)
 
     def test_basic_report(self):
         """ Make sure a basic report can be run
         """
-        report = self.analytics.suites[0].report
+        report = self.analytics.suites[testReportSuite].report
         queue = []
         queue.append(report)
         response = omniture.sync(queue)

@@ -1,8 +1,10 @@
 # encoding: utf-8
+from __future__ import absolute_import
 
-import utils
 from copy import copy
 import logging
+
+from .import utils
 
 
 class Value(object):

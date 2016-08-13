@@ -1,11 +1,11 @@
 # encoding: utf-8
+from __future__ import absolute_import
 
-from elements import Value, Element, Segment
-import utils
 import logging
-from collections import OrderedDict
 from datetime import datetime
 import json
+
+from .elements import Value
 
 
 class InvalidReportError(Exception):
