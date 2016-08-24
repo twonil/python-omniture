@@ -129,7 +129,7 @@ class Report(object):
             else:
                 if hasattr(self.elements[level], 'classification'):
                     #handle the case where there are multiple classifications
-                    element = str(self.elements[level].id) + ' | ' + str(self.elements[level-1].classification).encode('utf-8')
+                    element = str(self.elements[level].id) + ' | ' + str(self.elements[level].classification).encode('utf-8')
                 else:
                     element = str(self.elements[level].id)
 

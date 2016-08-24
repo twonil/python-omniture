@@ -77,7 +77,7 @@
         "version": "1.4.16.7",
         "reportSuite": {
             "id": "test_rs",
-            "name": "test_RS)"
+            "name": "test_RS"
         },
         "type": "ranked"
     },

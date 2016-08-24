@@ -126,6 +126,33 @@ class ReportTest(unittest.TestCase):
         self.assertTrue('evar2 | Classification 1' in report.data[0], "The Value of report.data[0] was:{}".format(report.data[0]))
         self.assertTrue('evar2 | Classification 2' in report.data[0], "The Value of report.data[0] was:{}".format(report.data[0]))
 
+    @requests_mock.mock()
+    def test_mixed_classifications(self, m):
+        """Makes sure the report can parse reports with classifications and
+        regular dimensionscorrectly since they have the same element ID"""
+        #load sample file
+        path = os.path.dirname(__file__)
+
+        with open(path+'/mock_objects/mixed_classifications.json') as data_file:
+            json_response = data_file.read()
+
+        with open(path+'/mock_objects/Report.Queue.json') as queue_file:
+            ReportQueue = queue_file.read()
+
+        #setup mock object
+        m.post('https://api.omniture.com/admin/1.4/rest/?method=Company.GetReportSuites', text=json_response)
+        m.post('https://api.omniture.com/admin/1.4/rest/?method=Report.Get', text=json_response)
+        m.post('https://api.omniture.com/admin/1.4/rest/?method=Report.Queue', text=ReportQueue)
+
+        report = self.analytics.suites[0].report\
+            .element('evar3',classification="Classification 1", disable_validation=True)\
+            .element('evar5', disable_validation=True)\
+
+        report = report.run()
+
+        self.assertTrue('evar3 | Classification 1' in report.data[0], "The Value of report.data[0] was:{}".format(report.data[0]))
+        self.assertTrue('evar5' in report.data[0], "The Value of report.data[0] was:{}".format(report.data[0]))
+
 
 
 if __name__ == '__main__':
