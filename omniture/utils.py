@@ -31,7 +31,7 @@ class AddressableList(list):
             matches = [item for item in self if item.title == key or item.id == key]
             count = len(matches)
             if count > 1:
-                matches = map(repr, matches)
+                matches = list(map(repr, matches))
                 error = "Found multiple matches for {key}: {matches}. ".format(
                     key=key, matches=", ".join(matches))
                 advice = "Use the identifier instead."
@@ -69,6 +69,12 @@ class AddressableDict(AddressableList):
 
 
 def date(obj):
+    #used to ensure compatibility with Python3 without having to user six
+    try:
+        basestring
+    except NameError:
+        basestring = str
+
     if obj is None:
         return None
     elif isinstance(obj, datetime.date):
@@ -78,6 +84,8 @@ def date(obj):
             return obj
     elif isinstance(obj, basestring):
         return parse_date(obj).date()
+    elif isinstance(obj, unicode):
+        return parse_date(str(obj)).date()
     else:
         raise ValueError("Can only convert strings into dates, received {}"
                          .format(obj.__class__))

@@ -1,5 +1,6 @@
 # encoding: utf-8
 from __future__ import absolute_import
+from __future__ import print_function
 
 import logging
 from datetime import datetime
@@ -14,7 +15,7 @@ class InvalidReportError(Exception):
     invalid
     """
     def normalize(self, error):
-        print 'error', error
+        print ('error', error)
         return {
             'error': error.get('error'),
             'error_description': error.get('error_description'),

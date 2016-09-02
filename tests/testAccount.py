@@ -10,7 +10,7 @@ creds['secret'] = os.environ['OMNITURE_SECRET']
 testReportSuite = "omniture.api-gateway"
 
 
-class AccountUnitTest(unittest.TestCase):
+class AccountTest(unittest.TestCase):
     def setUp(self):
         self.analytics = omniture.authenticate(creds['username'], creds['secret'])
 

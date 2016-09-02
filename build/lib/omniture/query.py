@@ -1,5 +1,6 @@
 # encoding: utf-8
 from __future__ import absolute_import
+from __future__ import print_function
 
 import time
 from copy import copy, deepcopy
@@ -381,7 +382,7 @@ class Query(object):
     def _repr_html_(self):
         """ Format in HTML for iPython Users """
         html = "Current Report Settings</br>"
-        for key, value in self.raw.iteritems():
+        for key, value in self.raw:
             html += "<b>{0}</b>: {1} </br>".format(key, value)
         if self.id:
             html += "This report has been submitted</br>"

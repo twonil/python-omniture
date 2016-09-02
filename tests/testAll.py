@@ -1,5 +1,5 @@
 import unittest
-from testaccountUnit import AccountUnitTest
+from testAccount import AccountTest
 from testQuery import QueryTest
 from testReports import ReportTest
 import sys
@@ -9,7 +9,7 @@ def test_suite():
     """ Test Suite for omnitue module """
 
     test_suite = unittest.TestSuite()
-    test_suite.addTest(unittest.makeSuite(AccountUnitTest))
+    test_suite.addTest(unittest.makeSuite(AccountTest))
     test_suite.addTest(unittest.makeSuite(QueryTest))
     test_suite.addTest(unittest.makeSuite(ReportTest))
 
