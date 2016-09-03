@@ -160,7 +160,7 @@ class Query(object):
         # It would appear to me that 'segment_id' has a strict subset
         # of the functionality of 'segments', but until I find out for
         # sure, I'll provide both options.
-        if not self.raw.has_key('segments'):
+        if 'segments' not in self.raw:
             self.raw['segments'] = []
 
         if disable_validation == False:

@@ -196,7 +196,6 @@ class QueryTest(unittest.TestCase):
             .element("sitesection", top=100, startingWith=1)\
             .set("locale","en_US")\
             .sortBy("visits")\
-            .filter("All Visits")\
             .set("anomalyDetection",True)\
             .set("currentData", True)\
             .set("elementDataEncoding","utf8")

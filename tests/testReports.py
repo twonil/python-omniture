@@ -1,4 +1,6 @@
 #!/usr/bin/python
+from __future__ import print_function
+
 
 import unittest
 import omniture
@@ -66,6 +68,7 @@ class ReportTest(unittest.TestCase):
 
         for report in response:
             #Check Data
+            print(report.data)
             self.assertIsInstance(report.data, list, "Data isn't getting populated right")
             self.assertIsInstance(report.data[0] , dict, "The data isn't getting into the dict")
             self.assertIsInstance(report.data[0]['page'], str, "The page isn't getting populated in the data")
