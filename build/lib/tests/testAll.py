@@ -2,7 +2,7 @@ from __future__ import absolute_import
 
 import unittest
 
-from .testAccount import AccountTest
+from omniture.tests import AccountTest
 from .testQuery import QueryTest
 from .testReports import ReportTest
 from .testElement import ElementTest
