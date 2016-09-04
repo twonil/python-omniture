@@ -201,7 +201,7 @@ class QueryTest(unittest.TestCase):
             .set("elementDataEncoding","utf8")
 
         testreport = self.analytics.suites[test_suite].jsonReport(report.json())
-        self.assertEqual(report.json(),testreport.json(), "The reportings aren't deserializing from JSON the same old:{} new:{}".format(report.json(),testreport))
+        self.assertEqual(report.json(),testreport.json(), "The reportings aren't deserializing from JSON the same old:{} new:{}".format(report.json(),testreport.json()))
 
 
     def test_disable_validate_metric(self):

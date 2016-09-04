@@ -260,7 +260,7 @@ If you want to build the module
 If you want to run unit tests
 
 ```bash
-    python tests/testAll.py
+    python -m unittest discover
 ```
 
 Contributers
