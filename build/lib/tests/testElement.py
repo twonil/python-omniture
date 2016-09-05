@@ -36,7 +36,7 @@ class ElementTest(unittest.TestCase):
                          .format(self.valueList[0]._repr_html_()))
 
     def test__str__(self):
-        self.assertEquals(self.valueList[0].__str__(),\
+        self.assertEqual(self.valueList[0].__str__(),\
                           "ID 123                       | Name: ABC \n",\
                           "__str__ returned: {}"\
                           .format(self.valueList[0].__str__()))

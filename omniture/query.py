@@ -316,14 +316,16 @@ class Query(object):
                     #raise reports.InvalidReportError(response)
 
             #Use a back off up to 30 seconds to play nice with the APIs
-            if interval < 30:
+            if interval < 1:
+                interval = 1
+            elif interval < 30:
                 interval = round(interval * 1.5)
             else:
                 interval = 30
             self.log.debug("Check Interval: %s seconds", interval)
 
     # only for SiteCatalyst queries
-    def sync(self, heartbeat=None, interval=1):
+    def sync(self, heartbeat=None, interval=0.01):
         """ Run the report synchronously,"""
         if not self.id:
             self.queue()
@@ -337,7 +339,7 @@ class Query(object):
         return self.report(response, self)
 
     #shortcut to run a report immediately
-    def run(self, defaultheartbeat=True, heartbeat=None, interval=1):
+    def run(self, defaultheartbeat=True, heartbeat=None, interval=0.01):
         """Shortcut for sync(). Runs the current report synchronously. """
         if defaultheartbeat == True:
             rheartbeat = self.heartbeat
