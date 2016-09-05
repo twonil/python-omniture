@@ -1,13 +1,14 @@
 #!/usr/bin/python
 
 import unittest
+import requests_mock
 import omniture
 import os
 
 creds = {}
 creds['username'] = os.environ['OMNITURE_USERNAME']
 creds['secret'] = os.environ['OMNITURE_SECRET']
-test_suite = 'omniture.api-gateway'
+test_report_suite = 'omniture.api-gateway'
 dateTo = "2015-06-01"
 dateFrom = "2015-06-02"
 date = dateTo
@@ -15,172 +16,201 @@ date = dateTo
 
 class QueryTest(unittest.TestCase):
     def setUp(self):
-        self.analytics = omniture.authenticate(creds['username'], creds['secret'])
-        #reportdef = self.analytics.suites[test_suite].report
-        #queue = []
-        #queue.append(reportdef)
-        #self.report = omniture.sync(queue)
+        with requests_mock.mock() as m:
+            path = os.path.dirname(__file__)
+            #read in mock response for Company.GetReportSuites to make tests faster
+            with open(path+'/mock_objects/Company.GetReportSuites.json') as get_report_suites_file:
+                report_suites = get_report_suites_file.read()
 
+            with open(path+'/mock_objects/Report.GetMetrics.json') as get_metrics_file:
+                metrics = get_metrics_file.read()
+
+            with open(path+'/mock_objects/Report.GetElements.json') as get_elements_file:
+                elements = get_elements_file.read()
+
+            with open(path+'/mock_objects/Segments.Get.json') as get_segments_file:
+                segments = get_segments_file.read()
+
+            #setup mock responses
+            m.post('https://api.omniture.com/admin/1.4/rest/?method=Company.GetReportSuites', text=report_suites)
+            m.post('https://api.omniture.com/admin/1.4/rest/?method=Report.GetMetrics', text=metrics)
+            m.post('https://api.omniture.com/admin/1.4/rest/?method=Report.GetElements', text=elements)
+            m.post('https://api.omniture.com/admin/1.4/rest/?method=Segments.Get', text=segments)
+
+
+            self.analytics = omniture.authenticate(creds['username'], creds['secret'])
+            #force requests to happen in this method so they are cached
+            self.analytics.suites[test_report_suite].metrics
+            self.analytics.suites[test_report_suite].elements
+            self.analytics.suites[test_report_suite].segments
 
     def test_ranked(self):
-        basic_report = self.analytics.suites[test_suite].report.element("page")
-        queue = []
-        queue.append(basic_report)
-        response = omniture.sync(queue)
+        """Test that a basic query can be generated """
+        basic_report = self.analytics.suites[test_report_suite].report.element("page")
+        self.assertEqual(basic_report.raw['elements'][0]['id'], "page", "The element is wrong: {}".format(basic_report.raw['elements'][0]['id']))
+        self.assertEqual(len(basic_report.raw['elements']), 1, "There are too many elements: {}".format(basic_report.raw['elements']))
 
-        for report in response:
-            self.assertEqual(report.elements[0].id, "page", "The element is wrong")
-            self.assertEqual(len(report.elements), 1, "There are too many elements")
-            self.assertEqual(report.type, "ranked", "This is the wrong type of report it should be ranked")
+    @requests_mock.mock()
+    def test_report_run(self,m):
+        """Make sure that are report can actually be run """
+        path = os.path.dirname(__file__)
+
+        with open(path+'/mock_objects/basic_report.json') as data_file:
+            json_response = data_file.read()
+
+        with open(path+'/mock_objects/Report.Queue.json') as queue_file:
+            report_queue = queue_file.read()
+
+        #setup mock object
+        m.post('https://api.omniture.com/admin/1.4/rest/?method=Report.Get', text=json_response)
+        m.post('https://api.omniture.com/admin/1.4/rest/?method=Report.Queue', text=report_queue)
 
 
-    def test_report_run(self):
-        self.assertIsInstance(self.analytics.suites[test_suite].report.run(), omniture.Report, "The run method doesn't work to create a report")
+        self.assertIsInstance(self.analytics.suites[test_report_suite].report.run(), omniture.Report, "The run method doesn't work to create a report")
 
     #@unittest.skip("skip")
     def test_bad_element(self):
-        self.assertRaises(KeyError,self.analytics.suites[test_suite].report.element, "pages")
+        """Test to make sure the element validation is woring"""
+        self.assertRaises(KeyError,self.analytics.suites[test_report_suite].report.element, "pages")
 
-    #@unittest.skip("skip")
+    @unittest.skip("Test Not Finished")
     def test_overtime(self):
-        basic_report = self.analytics.suites[test_suite].report.metric("orders").granularity("hour")
+        basic_report = self.analytics.suites[test_report_suite].report.metric("orders").granularity("hour")
         queue = []
         queue.append(basic_report)
         response = omniture.sync(queue)
 
     #@unittest.skip("skip")
     def test_double_element(self):
-        basic_report = self.analytics.suites[test_suite].report.element("page").element("browser")
-        queue = []
-        queue.append(basic_report)
-        response = omniture.sync(queue)
+        """Test to make sure two elements will work in the report"""
+        basic_report = self.analytics.suites[test_report_suite].report.element("page").element("browser")
+        self.assertEqual(basic_report.raw['elements'][0]['id'],"page", "The 1st element is wrong")
+        self.assertEqual(basic_report.raw['elements'][1]['id'],
+                         "browser", "The 2nd element is wrong: {}"
+                         .format(basic_report.raw['elements'][1]['id']))
+        self.assertEqual(len(basic_report.raw['elements']), 2, "The number of elements is wrong: {}".format(basic_report.raw['elements']))
 
-        for report in response:
-            self.assertEqual(report.elements[0].id,"page", "The 1st element is wrong")
-            self.assertEqual(report.elements[1].id,"browser", "The 2nd element is wrong")
-            self.assertEqual(len(report.elements), 2, "The number of elements is wrong")
-            self.assertEqual(report.type, "ranked", "This is the wrong type of report it should be ranked")
 
     #@unittest.skip("skip")
     def test_elements(self):
-        report = self.analytics.suites[test_suite].report.elements("page","browser").run()
-        self.assertEqual(report.elements[0].id,"page", "The 1st element is wrong")
-        self.assertEqual(report.elements[1].id,"browser", "The 2nd element is wrong")
-        self.assertEqual(len(report.elements), 2, "The number of elements is wrong")
-        self.assertEqual(report.type, "ranked", "This is the wrong type of report it should be ranked")
+        """ Make sure the Elements method works as a shortcut for adding multiple
+        elements"""
+        basic_report = self.analytics.suites[test_report_suite].report.elements("page","browser")
+        self.assertEqual(basic_report.raw['elements'][0]['id'],"page", "The 1st element is wrong: {}".format(basic_report.raw['elements'][0]['id']))
+        self.assertEqual(basic_report.raw['elements'][1]['id'],"browser", "The 2nd element is wrong: {}".format(basic_report.raw['elements'][1]['id']))
+        self.assertEqual(len(basic_report.raw['elements']), 2, "The number of elements is wrong: {}".format(basic_report.raw['elements']))
 
     #@unittest.skip("skip")
     def test_double_metric(self):
-        basic_report = self.analytics.suites[test_suite].report.metric("pageviews").metric("visits")
-        queue = []
-        queue.append(basic_report)
-        response = omniture.sync(queue)
+        """ Make sure multiple metric calls get set correcly """
+        basic_report = self.analytics.suites[test_report_suite].report.metric("pageviews").metric("visits")
 
-        for report in response:
-            self.assertEqual(report.metrics[0].id,"pageviews", "The 1st element is wrong")
-            self.assertEqual(report.metrics[1].id,"visits", "The 2nd element is wrong")
-            self.assertEqual(len(report.metrics), 2, "The number of elements is wrong")
-            self.assertEqual(report.type, "overtime", "This is the wrong type of report it should be overtime")
+        self.assertEqual(basic_report.raw['metrics'][0]['id'],"pageviews", "The 1st element is wrong")
+        self.assertEqual(basic_report.raw['metrics'][1]['id'],"visits", "The 2nd element is wrong")
+        self.assertEqual(len(basic_report.raw['metrics']), 2, "The number of elements is wrong")
 
     #@unittest.skip("skip")
     def test_metrics(self):
-        report = self.analytics.suites[test_suite].report.metrics("pageviews", "visits").run()
-        self.assertEqual(report.metrics[0].id,"pageviews", "The 1st element is wrong")
-        self.assertEqual(report.metrics[1].id,"visits", "The 2nd element is wrong")
-        self.assertEqual(len(report.metrics), 2, "The number of elements is wrong")
-        self.assertEqual(report.type, "overtime", "This is the wrong type of report it should be overtime")
+        """ Make sure the metrics method works as a shortcut for multiple
+        metrics"""
+        basic_report = self.analytics.suites[test_report_suite].report.metrics("pageviews", "visits")
+
+        self.assertEqual(basic_report.raw['metrics'][0]['id'],"pageviews", "The 1st element is wrong")
+        self.assertEqual(basic_report.raw['metrics'][1]['id'],"visits", "The 2nd element is wrong")
+        self.assertEqual(len(basic_report.raw['metrics']), 2, "The number of elements is wrong")
+
 
     #@unittest.skip("skip")
     def test_element_paratmers(self):
         """Test the top and startingWith parameters
-        This isn't a conclusive test. I really should run to two reports and compare the results to make sure it is corrent
-        However, these tests need to be able run on any report suite and some reports suites (like ones that are currenly being
-        used) don't have 10 items in the page name
         """
-        basic_report = self.analytics.suites[test_suite].report.element("page", top=5, startingWith=5)
-        queue = []
-        queue.append(basic_report)
-        response = omniture.sync(queue)
+        basic_report = self.analytics.suites[test_report_suite].report.element("page", top=5, startingWith=5)
 
-        for report in response:
-            self.assertEqual(report.elements['page'].id, "page" ,"The parameters might have screwed this up")
+        self.assertEqual(basic_report.raw['elements'][0]['id'],
+                         "page" ,
+                         "The parameters might have screwed this up: {}"
+                         .format(basic_report.raw['elements'][0]['id']))
+        self.assertEqual(basic_report.raw['elements'][0]['top'],
+                         5 ,
+                         "The top parameter isn't 5: {}"
+                         .format(basic_report.raw['elements'][0]['top']))
+        self.assertEqual(basic_report.raw['elements'][0]['startingWith'],
+                         5 ,
+                         "The startingWith parameter isn't 5: {}"
+                         .format(basic_report.raw['elements'][0]['startingWith']))
 
     @unittest.skip("don't have this one done yet")
     def test_anamoly_detection(self):
-        basic_report = self.analytics.suites[test_suite].report.metric("pageviews").range(dateFrom, dateTo).anomaly_detection()
-        queue = []
-        queue.append(basic_report)
-        response = omniture.sync(queue)
+        basic_report = self.analytics.suites[test_report_suite].report.metric("pageviews").range(dateFrom, dateTo).anomaly_detection()
 
-        for report in response:
-            self.assertEqual(report.metrics, "upper bound" ,"Anomaly Detection isn't working")
+        self.assertEqual(basic_report.raw['anomalyDetection'],"True", "anomalyDetection isn't getting set: {}".format(basic_report.raw))
 
     #@unittest.skip("skip")
     def test_sortBy(self):
             """ Make sure sortBy gets put in report description """
-            basic_report = self.analytics.suites[test_suite].report.element('page').metric('pageviews').metric('visits').sortBy('visits')
+            basic_report = self.analytics.suites[test_report_suite].report.element('page').metric('pageviews').metric('visits').sortBy('visits')
             self.assertEqual(basic_report.raw['sortBy'], "visits")
 
     #@unittest.skip("skip")
     def test_current_data(self):
         """ Make sure the current data flag gets set correctly """
-        basic_report = self.analytics.suites[test_suite].report.element('page').metric('pageviews').metric('visits').currentData()
+        basic_report = self.analytics.suites[test_report_suite].report.element('page').metric('pageviews').metric('visits').currentData()
         self.assertEqual(basic_report.raw['currentData'], True)
 
     #@unittest.skip("skip")
     def test_inline_segments(self):
         """ Make sure inline segments work """
-        report = self.analytics.suites[test_suite].report.element('page').metric('pageviews').metric('visits').filter(element='page', selected=["test","test1"])
+        report = self.analytics.suites[test_report_suite].report.element('page').metric('pageviews').metric('visits').filter(element='page', selected=["test","test1"])
         self.assertEqual(report.raw['segments'][0]['element'], "page", "The inline segment element isn't getting set")
         self.assertEqual(report.raw['segments'][0]['selected'], ["test","test1"], "The inline segment selected field isn't getting set")
 
     #@unittest.skip("skip")
     def test_hour_granularity(self):
         """ Make sure granularity works """
-        report = self.analytics.suites[test_suite].report.granularity('hour')
+        report = self.analytics.suites[test_report_suite].report.granularity('hour')
         self.assertEqual(report.raw['dateGranularity'], "hour", "Hourly granularity can't be set via the granularity method")
 
     #@unittest.skip("skip")
     def test_day_granularity(self):
         """ Make sure granularity works """
-        report = self.analytics.suites[test_suite].report.granularity('day')
+        report = self.analytics.suites[test_report_suite].report.granularity('day')
         self.assertEqual(report.raw['dateGranularity'], "day", "daily granularity can't be set via the granularity method")
 
     #@unittest.skip("skip")
     def test_week_granularity(self):
         """ Make sure granularity works """
-        report = self.analytics.suites[test_suite].report.granularity('day')
+        report = self.analytics.suites[test_report_suite].report.granularity('day')
         self.assertEqual(report.raw['dateGranularity'], "day", "Weekly granularity can't be set via the granularity method")
 
     #@unittest.skip("skip")
     def test_quarter_granularity(self):
         """ Make sure granularity works """
-        report = self.analytics.suites[test_suite].report.granularity('quarter')
+        report = self.analytics.suites[test_report_suite].report.granularity('quarter')
         self.assertEqual(report.raw['dateGranularity'], "quarter", "Quarterly granularity can't be set via the granularity method")
 
     #@unittest.skip("skip")
     def test_year_granularity(self):
         """ Make sure granularity works """
-        report = self.analytics.suites[test_suite].report.granularity('year')
+        report = self.analytics.suites[test_report_suite].report.granularity('year')
         self.assertEqual(report.raw['dateGranularity'], "year", "Yearly granularity can't be set via the granularity method")
 
     #@unittest.skip("skip")
     def test_single_date_range(self):
         """ Make sure date range works with a single date """
-        report = self.analytics.suites[test_suite].report.range(date)
+        report = self.analytics.suites[test_report_suite].report.range(date)
         self.assertEqual(report.raw['date'], date, "Can't set a single date")
 
     #@unittest.skip("skip")
     def test_date_range(self):
         """ Make sure date range works with two dates """
-        report = self.analytics.suites[test_suite].report.range(dateFrom,dateTo)
+        report = self.analytics.suites[test_report_suite].report.range(dateFrom,dateTo)
         self.assertEqual(report.raw['dateFrom'], dateFrom, "Start date isn't getting set correctly")
         self.assertEqual(report.raw['dateTo'], dateTo, "End date isn't getting set correctly")
 
     #@unittest.skip("skip")
     def test_granularity_date_range(self):
         """ Make sure granularity works in the date range app """
-        report = self.analytics.suites[test_suite].report.range(dateFrom,dateTo, granularity='hour')
+        report = self.analytics.suites[test_report_suite].report.range(dateFrom,dateTo, granularity='hour')
         self.assertEqual(report.raw['dateFrom'], dateFrom, "Start date isn't getting set correctly")
         self.assertEqual(report.raw['dateTo'], dateTo, "End date isn't getting set correctly")
         self.assertEqual(report.raw['dateGranularity'], "hour", "Hourly granularity can't be set via the range method")
@@ -188,7 +218,7 @@ class QueryTest(unittest.TestCase):
     ##@unittest.skip("skip")
     def test_jsonReport(self):
         """Check the JSON deserializer"""
-        report = self.analytics.suites[test_suite].report.range(dateFrom,dateTo,granularity='day')\
+        report = self.analytics.suites[test_report_suite].report.range(dateFrom,dateTo,granularity='day')\
             .set("source","standard")\
             .metric("pageviews")\
             .metric("visits")\
@@ -200,41 +230,69 @@ class QueryTest(unittest.TestCase):
             .set("currentData", True)\
             .set("elementDataEncoding","utf8")
 
-        testreport = self.analytics.suites[test_suite].jsonReport(report.json())
+        testreport = self.analytics.suites[test_report_suite].jsonReport(report.json())
         self.assertEqual(report.json(),testreport.json(), "The reportings aren't deserializing from JSON the same old:{} new:{}".format(report.json(),testreport.json()))
 
-
-    def test_disable_validate_metric(self):
+    @requests_mock.mock()
+    def test_disable_validate_metric(self,m):
         """checks that the no validate flag works for metrics"""
+        path = os.path.dirname(__file__)
+
+        with open(path+'/mock_objects/invalid_metric.json') as queue_file:
+            report_queue = queue_file.read()
+
+        #setup mock object
+        m.post('https://api.omniture.com/admin/1.4/rest/?method=Report.Queue', text=report_queue)
+
         with self.assertRaises(omniture.InvalidReportError) as e:
-            report = self.analytics.suites[test_suite].report\
+            report = self.analytics.suites[test_report_suite].report\
                 .metric("bad_metric", disable_validation=True)\
                 .run()
 
         self.assertTrue(("metric_id_invalid" in e.exception.message),"The API is returning an error that might mean this is broken")
 
-
-    def test_disable_validate_element(self):
+    @requests_mock.mock()
+    def test_disable_validate_element(self,m):
         """checks that the no validate flag works for elements"""
+        path = os.path.dirname(__file__)
+
+        with open(path+'/mock_objects/invalid_element.json') as queue_file:
+            report_queue = queue_file.read()
+
+        #setup mock object
+        m.post('https://api.omniture.com/admin/1.4/rest/?method=Report.Queue', text=report_queue)
+
         with self.assertRaises(omniture.InvalidReportError) as e:
-            report = self.analytics.suites[test_suite].report\
+            report = self.analytics.suites[test_report_suite].report\
                 .element("bad_element", disable_validation=True)\
                 .run()
 
         self.assertTrue(("element_id_invalid" in e.exception.message),"The API is returning an error that might mean this is broken")
 
-    def test_disable_validate_segments(self):
+    @requests_mock.mock()
+    def test_disable_validate_segments(self,m):
         """checks that the no validate flag works for segments"""
+
+        path = os.path.dirname(__file__)
+
+        with open(path+'/mock_objects/invalid_segment.json') as queue_file:
+            report_queue = queue_file.read()
+
+        #setup mock object
+        m.post('https://api.omniture.com/admin/1.4/rest/?method=Report.Queue', text=report_queue)
+
         with self.assertRaises(omniture.InvalidReportError) as e:
-            report = self.analytics.suites[test_suite].report\
+            report = self.analytics.suites[test_report_suite].report\
                 .filter("bad_segment", disable_validation=True)\
                 .run()
 
-        self.assertTrue(("segment_invalid" in e.exception.message),"The API is returning an error that might mean this is broken")
+        self.assertTrue(("segment_invalid" in e.exception.message),
+                        "The API is returning an error that might mean this is broken: {}"
+                        .format(e.exception.message))
 
     def test_multiple_classifications(self):
         """Checks to make sure that multiple classificaitons are handled correctly """
-        report = self.analytics.suites[test_suite].report\
+        report = self.analytics.suites[test_report_suite].report\
             .element("page", classification="test")\
             .element("page", classification= "test2")
 
