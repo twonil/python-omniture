@@ -299,5 +299,16 @@ class QueryTest(unittest.TestCase):
         self.assertEqual("test",  report.raw['elements'][0]['classification'],"The classifications aren't getting set right")
         self.assertEqual("test2",  report.raw['elements'][1]['classification'],"The second classification isn't getting set right")
 
+    def test__dir__(self):
+        valid_value = ['async', 'breakdown', 'cancel', 'clone', 'currentData',
+                 'element', 'filter', 'granularity', 'id', 'json',
+                 'metric', 'queue', 'range', 'raw', 'report', 'request',
+                 'run', 'set', 'sortBy', 'suite']
+        test_value = self.analytics.suites[test_report_suite].report.__dir__()
+
+        self.assertEqual(test_value,valid_value,
+                         "The __dir__ method isn't returning right: {}"
+                         .format(test_value))
+
 if __name__ == '__main__':
     unittest.main()
