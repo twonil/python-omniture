@@ -367,7 +367,7 @@ class Query(object):
     def _repr_html_(self):
         """ Format in HTML for iPython Users """
         html = "Current Report Settings</br>"
-        for key, value in self.raw:
+        for key, value in list(self.raw.items()):
             html += "<b>{0}</b>: {1} </br>".format(key, value)
         if self.id:
             html += "This report has been submitted</br>"

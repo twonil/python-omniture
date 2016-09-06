@@ -310,5 +310,34 @@ class QueryTest(unittest.TestCase):
                          "The __dir__ method isn't returning right: {}"
                          .format(test_value))
 
+    def test_repr_html_(self):
+        """Make sure the HTML representation fo iPython is working corretly"""
+        valid_html = "Current Report Settings</br><b>elements</b>: [{'id': u'page'}] </br><b>reportSuiteID</b>: "+test_report_suite+" </br>"
+        test_html = self.analytics.suites[test_report_suite]\
+            .report\
+            .element('page')\
+            ._repr_html_()
+
+
+        self.assertEqual(test_html,valid_html,
+                         "the HTML isn't generating correctly: {}"
+                         .format(test_html))
+
+        def test_repr_html_report_id(self):
+            """Make sure the HTML representation fo iPython is working corretly
+            with a report id"""
+            valid_html = "Current Report Settings</br><b>elements</b>: [{'id': u'page'}] </br><b>reportSuiteID</b>: "+test_report_suite+" </br>This report has been submitted</br><b>ReportId</b>: 123 </br>"
+            test_html = self.analytics.suites[test_report_suite]\
+                .report\
+                .element('page')
+            test_html.id = "123"
+            test_html = test_html._repr_html_()
+
+
+            self.assertEqual(test_html,valid_html,
+                             "the HTML isn't generating correctly: {}"
+                             .format(test_html))
+
+
 if __name__ == '__main__':
     unittest.main()

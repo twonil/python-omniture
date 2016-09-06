@@ -261,15 +261,6 @@ class Query(object):
         self.raw['currentData'] = True
         return self
 
-    # TODO: data warehouse reports are a work in progress
-    @immutable
-    def data(self, metrics, breakdowns):
-        self.report = reports.DataWarehouseReport
-        self.raw['metrics'] = self._serialize_values(metrics, 'metrics')
-        # TODO: haven't figured out how breakdowns work yet
-        self.raw['breakdowns'] = False
-        return self
-
 
     def build(self):
         """ Return the report descriptoin as an object """
@@ -360,18 +351,10 @@ class Query(object):
 
         raise NotImplementedError()
 
-    # only for Data Warehouse queries
-    def request(self, name='python-omniture query', ftp=None, email=None):
-        raise NotImplementedError()
 
     def cancel(self):
         """ Cancels a the report from the Queue on the Adobe side. """
-        if self.report == reports.DataWarehouseReport:
-            return self.suite.request('DataWarehouse',
-                                      'CancelRequest',
-                                      {'Request_Id': self.id})
-        else:
-            return self.suite.request('Report',
+        return self.suite.request('Report',
                                       'CancelReport',
                                       {'reportID': self.id})
     def json(self):
@@ -384,7 +367,7 @@ class Query(object):
     def _repr_html_(self):
         """ Format in HTML for iPython Users """
         html = "Current Report Settings</br>"
-        for key, value in self.raw:
+        for key, value in list(self.raw.items()):
             html += "<b>{0}</b>: {1} </br>".format(key, value)
         if self.id:
             html += "This report has been submitted</br>"

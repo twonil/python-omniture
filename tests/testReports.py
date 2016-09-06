@@ -84,7 +84,7 @@ class ReportTest(unittest.TestCase):
         self.assertEqual(response.elements[0].id,"datetime", "There are elements when there shouldn't be")
 
         #check time range
-        checkdate = date.today().strftime("%a. %e %h. %Y")
+        checkdate = date(2016,9,04).strftime("%a. %e %h. %Y")
         self.assertEqual(response.period, checkdate)
 
         #check segmetns

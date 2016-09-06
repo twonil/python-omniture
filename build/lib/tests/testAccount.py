@@ -42,6 +42,17 @@ class AccountTest(unittest.TestCase):
             self.analytics.suites[test_report_suite].segments
 
 
+    def test_os_environ(self):
+        test = omniture.authenticate({'OMNITURE_USERNAME':creds['username'],
+                                           'OMNITURE_SECRET':creds['secret']})
+        self.assertEqual(test.username,creds['username'],
+                         "The username isn't getting set right: {}"
+                         .format(test.username))
+
+        self.assertEqual(test.secret,creds['secret'],
+                         "The secret isn't getting set right: {}"
+                         .format(test.secret))
+
     def test_suites(self):
         self.assertIsInstance(self.analytics.suites, omniture.utils.AddressableList, "There are no suites being returned")
         self.assertIsInstance(self.analytics.suites[test_report_suite], omniture.account.Suite, "There are no suites being returned")
