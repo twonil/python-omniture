@@ -236,7 +236,7 @@ class Report(object):
         return html
 
     def __str__(self):
-        return json.dumps(self.raw,indent=4, separators=(',', ': '))
+        return json.dumps(self.raw,indent=4, separators=(',', ': '),sort_keys=True)
 
 Report.method = "Queue"
 
