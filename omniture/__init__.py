@@ -7,11 +7,11 @@ import logging.config
 import io
 
 from .account import Account, Suite
-from .elements import Value, Element, Segment
+from .elements import Value
 from .query import Query
 from .reports import InvalidReportError, Report, DataWarehouseReport
 from .version import __version__
-from . import utils
+from .utils import *
 
 
 def authenticate(username, secret=None, endpoint=Account.DEFAULT_ENDPOINT, prefix='', suffix=''):

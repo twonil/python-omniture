@@ -1,0 +1,43 @@
+{
+  "report": {
+    "elements": [
+      {
+        "id": "datetime",
+        "name": "Date"
+      }
+    ],
+    "data": [
+      {
+        "counts": [
+          "14617259"
+        ],
+        "month": 9,
+        "name": "Sun.  4 Sep. 2016",
+        "day": 4,
+        "year": 2016
+      }
+    ],
+    "period": "Sun.  4 Sep. 2016",
+    "totals": [
+      "14617259"
+    ],
+    "metrics": [
+      {
+        "latency": 1955,
+        "name": "Page Views",
+        "type": "number",
+        "current": false,
+        "decimals": 0,
+        "id": "pageviews"
+      }
+    ],
+    "version": "1.4.16.7",
+    "reportSuite": {
+      "id": "omniture.api-gateway",
+      "name": "test_report_suite"
+    },
+    "type": "overtime"
+  },
+  "waitSeconds": "0.442",
+  "runSeconds": "3.752"
+}

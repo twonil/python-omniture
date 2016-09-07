@@ -1,7 +1,11 @@
+from __future__ import absolute_import
+
 import unittest
-from testAccount import AccountTest
-from testQuery import QueryTest
-from testReports import ReportTest
+
+from omniture.tests import AccountTest
+from .testQuery import QueryTest
+from .testReports import ReportTest
+from .testElement import ElementTest
 import sys
 
 
@@ -12,6 +16,7 @@ def test_suite():
     test_suite.addTest(unittest.makeSuite(AccountTest))
     test_suite.addTest(unittest.makeSuite(QueryTest))
     test_suite.addTest(unittest.makeSuite(ReportTest))
+    test_suite.addTest(unittest.makeSuite(AccountTest))
 
     return test_suite
 

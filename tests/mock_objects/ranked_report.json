@@ -1,0 +1,91 @@
+{
+  "report": {
+    "elements": [
+      {
+        "id": "page",
+        "name": "Page"
+      }
+    ],
+    "data": [
+      {
+        "url": "http:/example.com/page1.html",
+        "counts": [
+          "13464027",
+          "13401805"
+        ],
+        "name": "page1"
+      },
+      {
+        "url": "http:/example.com/page2.html",
+        "counts": [
+          "31320",
+          "31298"
+        ],
+        "name": "page2"
+      },
+      {
+        "url": "http:/example.com/page3.html",
+        "counts": [
+          "501",
+          "501"
+        ],
+        "name": "page3"
+      },
+      {
+        "url": "http:/example.com/page4.html",
+        "counts": [
+          "249",
+          "249"
+        ],
+        "name": "page4"
+      },
+      {
+        "url": "http:/example.com/page5.html",
+        "counts": [
+          "99",
+          "99"
+        ],
+        "name": "page5"
+      },
+      {
+        "url": "http:/example.com/page5.html",
+        "counts": [
+          "10",
+          "5"
+        ],
+        "name": "page5"
+      }
+    ],
+    "period": "Sun.  4 Sep. 2016",
+    "totals": [
+      "13496206",
+      "13433952"
+    ],
+    "metrics": [
+      {
+        "latency": 2291,
+        "name": "Page Views",
+        "type": "number",
+        "current": false,
+        "decimals": 0,
+        "id": "pageviews"
+      },
+      {
+        "latency": 2291,
+        "name": "Visits",
+        "type": "number",
+        "current": false,
+        "decimals": 0,
+        "id": "visits"
+      }
+    ],
+    "version": "1.4.16.7",
+    "reportSuite": {
+      "id": "omniture.api-gateway",
+      "name": "test_report_suite"
+    },
+    "type": "ranked"
+  },
+  "waitSeconds": "0.557",
+  "runSeconds": "3.877"
+}

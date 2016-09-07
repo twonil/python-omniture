@@ -1,0 +1,1330 @@
+{
+  "report": {
+    "elements": [
+      {
+        "id": "page",
+        "name": "Page"
+      }
+    ],
+    "data": [
+      {
+        "breakdown": [
+          {
+            "url": "http:/example.com/page1.html",
+            "counts": [
+              "731750"
+            ],
+            "name": "page1"
+          },
+          {
+            "url": "page1http:/example.com/page2.html",
+            "counts": [
+              "1756"
+            ],
+            "name": "page2"
+          },
+          {
+            "url": "http:/example.com/page3.html",
+            "counts": [
+              "44"
+            ],
+            "name": "page3"
+          },
+          {
+            "url": "http:/example.com/page4.html",
+            "counts": [
+              "15"
+            ],
+            "name": "authorize|prod"
+          },
+          {
+            "url": "http:/example.com/page5.html",
+            "counts": [
+              "14"
+            ],
+            "name": "page5"
+          },
+          {
+            "url": "http:/example.com/page6.html",
+            "counts": [
+              "0"
+            ],
+            "name": "page6"
+          }
+        ],
+        "name": "Sun.  4 Sep. 2016",
+        "hour": 0,
+        "breakdownTotal": [
+          "733579"
+        ],
+        "month": 9,
+        "year": 2016,
+        "day": 4
+      },
+      {
+        "breakdown": [
+          {
+            "url": "http:/example.com/page1.html",
+            "counts": [
+              "748879"
+            ],
+            "name": "page1"
+          },
+          {
+            "url": "page1http:/example.com/page2.html",
+            "counts": [
+              "1697"
+            ],
+            "name": "page2"
+          },
+          {
+            "url": "http:/example.com/page3.html",
+            "counts": [
+              "55"
+            ],
+            "name": "page3"
+          },
+          {
+            "url": "http:/example.com/page4.html",
+            "counts": [
+              "10"
+            ],
+            "name": "page4"
+          },
+          {
+            "url": "http:/example.com/page5.html",
+            "counts": [
+              "1"
+            ],
+            "name": "page5"
+          },
+          {
+            "url": "http:/example.com/page6.html",
+            "counts": [
+              "1"
+            ],
+            "name": "page6"
+          }
+        ],
+        "name": "Sun.  4 Sep. 2016 (Hour 1)",
+        "hour": 1,
+        "breakdownTotal": [
+          "750642"
+        ],
+        "month": 9,
+        "year": 2016,
+        "day": 4
+      },
+      {
+        "breakdown": [
+          {
+            "url": "http:/example.com/page1.html",
+            "counts": [
+              "791212"
+            ],
+            "name": "page1"
+          },
+          {
+            "url": "page1http:/example.com/page2.html",
+            "counts": [
+              "1800"
+            ],
+            "name": "page2"
+          },
+          {
+            "url": "http:/example.com/page3.html",
+            "counts": [
+              "30"
+            ],
+            "name": "page3"
+          },
+          {
+            "url": "http:/example.com/page4.html",
+            "counts": [
+              "15"
+            ],
+            "name": "authorize|prod"
+          },
+          {
+            "url": "http:/example.com/page5.html",
+            "counts": [
+              "1"
+            ],
+            "name": "page5"
+          },
+          {
+            "url": "http:/example.com/page6.html",
+            "counts": [
+              "0"
+            ],
+            "name": "page6"
+          }
+        ],
+        "name": "Sun.  4 Sep. 2016 (Hour 2)",
+        "hour": 2,
+        "breakdownTotal": [
+          "793058"
+        ],
+        "month": 9,
+        "year": 2016,
+        "day": 4
+      },
+      {
+        "breakdown": [
+          {
+            "url": "http:/example.com/page1.html",
+            "counts": [
+              "784806"
+            ],
+            "name": "page1"
+          },
+          {
+            "url": "page1http:/example.com/page2.html",
+            "counts": [
+              "1812"
+            ],
+            "name": "page2"
+          },
+          {
+            "url": "http:/example.com/page3.html",
+            "counts": [
+              "24"
+            ],
+            "name": "page3"
+          },
+          {
+            "url": "http:/example.com/page4.html",
+            "counts": [
+              "10"
+            ],
+            "name": "authorize|prod"
+          },
+          {
+            "url": "http:/example.com/page5.html",
+            "counts": [
+              "1"
+            ],
+            "name": "page5"
+          },
+          {
+            "url": "http:/example.com/page6.html",
+            "counts": [
+              "0"
+            ],
+            "name": "page6"
+          }
+        ],
+        "name": "Sun.  4 Sep. 2016 (Hour 3)",
+        "hour": 3,
+        "breakdownTotal": [
+          "786653"
+        ],
+        "month": 9,
+        "year": 2016,
+        "day": 4
+      },
+      {
+        "breakdown": [
+          {
+            "url": "http:/example.com/page1.html",
+            "counts": [
+              "869530"
+            ],
+            "name": "page1"
+          },
+          {
+            "url": "page1http:/example.com/page2.html",
+            "counts": [
+              "1822"
+            ],
+            "name": "page2"
+          },
+          {
+            "url": "http:/example.com/page3.html",
+            "counts": [
+              "29"
+            ],
+            "name": "page3"
+          },
+          {
+            "url": "http:/example.com/page4.html",
+            "counts": [
+              "7"
+            ],
+            "name": "authorize|prod"
+          },
+          {
+            "url": "http:/example.com/page5.html",
+            "counts": [
+              "5"
+            ],
+            "name": "page5"
+          },
+          {
+            "url": "http:/example.com/page6.html",
+            "counts": [
+              "0"
+            ],
+            "name": "page6"
+          }
+        ],
+        "name": "Sun.  4 Sep. 2016 (Hour 4)",
+        "hour": 4,
+        "breakdownTotal": [
+          "871393"
+        ],
+        "month": 9,
+        "year": 2016,
+        "day": 4
+      },
+      {
+        "breakdown": [
+          {
+            "url": "http:/example.com/page1.html",
+            "counts": [
+              "840170"
+            ],
+            "name": "page1"
+          },
+          {
+            "url": "page1http:/example.com/page2.html",
+            "counts": [
+              "1781"
+            ],
+            "name": "page2"
+          },
+          {
+            "url": "http:/example.com/page3.html",
+            "counts": [
+              "26"
+            ],
+            "name": "page3"
+          },
+          {
+            "url": "http:/example.com/page4.html",
+            "counts": [
+              "11"
+            ],
+            "name": "authorize|prod"
+          },
+          {
+            "url": "http:/example.com/page5.html",
+            "counts": [
+              "1"
+            ],
+            "name": "page5"
+          },
+          {
+            "url": "http:/example.com/page6.html",
+            "counts": [
+              "0"
+            ],
+            "name": "page6"
+          }
+        ],
+        "name": "Sun.  4 Sep. 2016 (Hour 5)",
+        "hour": 5,
+        "breakdownTotal": [
+          "841989"
+        ],
+        "month": 9,
+        "year": 2016,
+        "day": 4
+      },
+      {
+        "breakdown": [
+          {
+            "url": "http:/example.com/page1.html",
+            "counts": [
+              "814745"
+            ],
+            "name": "page1"
+          },
+          {
+            "url": "page1http:/example.com/page2.html",
+            "counts": [
+              "1751"
+            ],
+            "name": "page2"
+          },
+          {
+            "url": "http:/example.com/page3.html",
+            "counts": [
+              "24"
+            ],
+            "name": "page3"
+          },
+          {
+            "url": "http:/example.com/page4.html",
+            "counts": [
+              "15"
+            ],
+            "name": "authorize|prod"
+          },
+          {
+            "url": "http:/example.com/page5.html",
+            "counts": [
+              "0"
+            ],
+            "name": "page5"
+          },
+          {
+            "url": "http:/example.com/page6.html",
+            "counts": [
+              "0"
+            ],
+            "name": "page6"
+          }
+        ],
+        "name": "Sun.  4 Sep. 2016 (Hour 6)",
+        "hour": 6,
+        "breakdownTotal": [
+          "816535"
+        ],
+        "month": 9,
+        "year": 2016,
+        "day": 4
+      },
+      {
+        "breakdown": [
+          {
+            "url": "http:/example.com/page1.html",
+            "counts": [
+              "741276"
+            ],
+            "name": "page1"
+          },
+          {
+            "url": "page1http:/example.com/page2.html",
+            "counts": [
+              "1777"
+            ],
+            "name": "page2"
+          },
+          {
+            "url": "http:/example.com/page3.html",
+            "counts": [
+              "24"
+            ],
+            "name": "page3"
+          },
+          {
+            "url": "http:/example.com/page4.html",
+            "counts": [
+              "16"
+            ],
+            "name": "authorize|prod"
+          },
+          {
+            "url": "http:/example.com/page5.html",
+            "counts": [
+              "1"
+            ],
+            "name": "page5"
+          },
+          {
+            "url": "http:/example.com/page6.html",
+            "counts": [
+              "2"
+            ],
+            "name": "page6"
+          }
+        ],
+        "name": "Sun.  4 Sep. 2016 (Hour 7)",
+        "hour": 7,
+        "breakdownTotal": [
+          "743096"
+        ],
+        "month": 9,
+        "year": 2016,
+        "day": 4
+      },
+      {
+        "breakdown": [
+          {
+            "url": "http:/example.com/page1.html",
+            "counts": [
+              "770364"
+            ],
+            "name": "page1"
+          },
+          {
+            "url": "page1http:/example.com/page2.html",
+            "counts": [
+              "1855"
+            ],
+            "name": "page2"
+          },
+          {
+            "url": "http:/example.com/page3.html",
+            "counts": [
+              "26"
+            ],
+            "name": "page3"
+          },
+          {
+            "url": "http:/example.com/page4.html",
+            "counts": [
+              "9"
+            ],
+            "name": "authorize|prod"
+          },
+          {
+            "url": "http:/example.com/page5.html",
+            "counts": [
+              "2"
+            ],
+            "name": "page5"
+          },
+          {
+            "url": "http:/example.com/page6.html",
+            "counts": [
+              "0"
+            ],
+            "name": "page6"
+          }
+        ],
+        "name": "Sun.  4 Sep. 2016 (Hour 8)",
+        "hour": 8,
+        "breakdownTotal": [
+          "772256"
+        ],
+        "month": 9,
+        "year": 2016,
+        "day": 4
+      },
+      {
+        "breakdown": [
+          {
+            "url": "http:/example.com/page1.html",
+            "counts": [
+              "703279"
+            ],
+            "name": "page1"
+          },
+          {
+            "url": "page1http:/example.com/page2.html",
+            "counts": [
+              "1800"
+            ],
+            "name": "page2"
+          },
+          {
+            "url": "http:/example.com/page3.html",
+            "counts": [
+              "24"
+            ],
+            "name": "page3"
+          },
+          {
+            "url": "http:/example.com/page4.html",
+            "counts": [
+              "21"
+            ],
+            "name": "authorize|prod"
+          },
+          {
+            "url": "http:/example.com/page5.html",
+            "counts": [
+              "0"
+            ],
+            "name": "page5"
+          },
+          {
+            "url": "http:/example.com/page6.html",
+            "counts": [
+              "0"
+            ],
+            "name": "page6"
+          }
+        ],
+        "name": "Sun.  4 Sep. 2016 (Hour 9)",
+        "hour": 9,
+        "breakdownTotal": [
+          "705124"
+        ],
+        "month": 9,
+        "year": 2016,
+        "day": 4
+      },
+      {
+        "breakdown": [
+          {
+            "url": "http:/example.com/page1.html",
+            "counts": [
+              "762225"
+            ],
+            "name": "page1"
+          },
+          {
+            "url": "page1http:/example.com/page2.html",
+            "counts": [
+              "1735"
+            ],
+            "name": "page2"
+          },
+          {
+            "url": "http:/example.com/page3.html",
+            "counts": [
+              "24"
+            ],
+            "name": "page3"
+          },
+          {
+            "url": "http:/example.com/page4.html",
+            "counts": [
+              "13"
+            ],
+            "name": "authorize|prod"
+          },
+          {
+            "url": "http:/example.com/page5.html",
+            "counts": [
+              "8"
+            ],
+            "name": "page5"
+          },
+          {
+            "url": "http:/example.com/page6.html",
+            "counts": [
+              "0"
+            ],
+            "name": "page6"
+          }
+        ],
+        "name": "Sun.  4 Sep. 2016 (Hour 10)",
+        "hour": 10,
+        "breakdownTotal": [
+          "764005"
+        ],
+        "month": 9,
+        "year": 2016,
+        "day": 4
+      },
+      {
+        "breakdown": [
+          {
+            "url": "http:/example.com/page1.html",
+            "counts": [
+              "707441"
+            ],
+            "name": "page1"
+          },
+          {
+            "url": "page1http:/example.com/page2.html",
+            "counts": [
+              "1730"
+            ],
+            "name": "page2"
+          },
+          {
+            "url": "http:/example.com/page3.html",
+            "counts": [
+              "24"
+            ],
+            "name": "page3"
+          },
+          {
+            "url": "http:/example.com/page4.html",
+            "counts": [
+              "10"
+            ],
+            "name": "authorize|prod"
+          },
+          {
+            "url": "http:/example.com/page5.html",
+            "counts": [
+              "19"
+            ],
+            "name": "page5"
+          },
+          {
+            "url": "http:/example.com/page6.html",
+            "counts": [
+              "0"
+            ],
+            "name": "page6"
+          }
+        ],
+        "name": "Sun.  4 Sep. 2016 (Hour 11)",
+        "hour": 11,
+        "breakdownTotal": [
+          "709224"
+        ],
+        "month": 9,
+        "year": 2016,
+        "day": 4
+      },
+      {
+        "breakdown": [
+          {
+            "url": "http:/example.com/page1.html",
+            "counts": [
+              "671911"
+            ],
+            "name": "page1"
+          },
+          {
+            "url": "page1http:/example.com/page2.html",
+            "counts": [
+              "1687"
+            ],
+            "name": "page2"
+          },
+          {
+            "url": "http:/example.com/page3.html",
+            "counts": [
+              "24"
+            ],
+            "name": "page3"
+          },
+          {
+            "url": "http:/example.com/page4.html",
+            "counts": [
+              "9"
+            ],
+            "name": "authorize|prod"
+          },
+          {
+            "url": "http:/example.com/page5.html",
+            "counts": [
+              "13"
+            ],
+            "name": "page5"
+          },
+          {
+            "url": "http:/example.com/page6.html",
+            "counts": [
+              "2"
+            ],
+            "name": "page6"
+          }
+        ],
+        "name": "Sun.  4 Sep. 2016 (Hour 12)",
+        "hour": 12,
+        "breakdownTotal": [
+          "673646"
+        ],
+        "month": 9,
+        "year": 2016,
+        "day": 4
+      },
+      {
+        "breakdown": [
+          {
+            "url": "http:/example.com/page1.html",
+            "counts": [
+              "670532"
+            ],
+            "name": "page1"
+          },
+          {
+            "url": "page1http:/example.com/page2.html",
+            "counts": [
+              "1645"
+            ],
+            "name": "page2"
+          },
+          {
+            "url": "http:/example.com/page3.html",
+            "counts": [
+              "24"
+            ],
+            "name": "page3"
+          },
+          {
+            "url": "http:/example.com/page4.html",
+            "counts": [
+              "8"
+            ],
+            "name": "authorize|prod"
+          },
+          {
+            "url": "http:/example.com/page5.html",
+            "counts": [
+              "0"
+            ],
+            "name": "page5"
+          },
+          {
+            "url": "http:/example.com/page6.html",
+            "counts": [
+              "0"
+            ],
+            "name": "page6"
+          }
+        ],
+        "name": "Sun.  4 Sep. 2016 (Hour 13)",
+        "hour": 13,
+        "breakdownTotal": [
+          "672209"
+        ],
+        "month": 9,
+        "year": 2016,
+        "day": 4
+      },
+      {
+        "breakdown": [
+          {
+            "url": "http:/example.com/page1.html",
+            "counts": [
+              "691776"
+            ],
+            "name": "page1"
+          },
+          {
+            "url": "page1http:/example.com/page2.html",
+            "counts": [
+              "1672"
+            ],
+            "name": "page2"
+          },
+          {
+            "url": "http:/example.com/page3.html",
+            "counts": [
+              "27"
+            ],
+            "name": "page3"
+          },
+          {
+            "url": "http:/example.com/page4.html",
+            "counts": [
+              "9"
+            ],
+            "name": "authorize|prod"
+          },
+          {
+            "url": "http:/example.com/page5.html",
+            "counts": [
+              "21"
+            ],
+            "name": "page5"
+          },
+          {
+            "url": "http:/example.com/page6.html",
+            "counts": [
+              "0"
+            ],
+            "name": "page6"
+          }
+        ],
+        "name": "Sun.  4 Sep. 2016 (Hour 14)",
+        "hour": 14,
+        "breakdownTotal": [
+          "693505"
+        ],
+        "month": 9,
+        "year": 2016,
+        "day": 4
+      },
+      {
+        "breakdown": [
+          {
+            "url": "http:/example.com/page1.html",
+            "counts": [
+              "721072"
+            ],
+            "name": "page1"
+          },
+          {
+            "url": "page1http:/example.com/page2.html",
+            "counts": [
+              "1667"
+            ],
+            "name": "page2"
+          },
+          {
+            "url": "http:/example.com/page3.html",
+            "counts": [
+              "24"
+            ],
+            "name": "page3"
+          },
+          {
+            "url": "http:/example.com/page4.html",
+            "counts": [
+              "21"
+            ],
+            "name": "authorize|prod"
+          },
+          {
+            "url": "http:/example.com/page5.html",
+            "counts": [
+              "3"
+            ],
+            "name": "page5"
+          },
+          {
+            "url": "http:/example.com/page6.html",
+            "counts": [
+              "0"
+            ],
+            "name": "page6"
+          }
+        ],
+        "name": "Sun.  4 Sep. 2016 (Hour 15)",
+        "hour": 15,
+        "breakdownTotal": [
+          "722787"
+        ],
+        "month": 9,
+        "year": 2016,
+        "day": 4
+      },
+      {
+        "breakdown": [
+          {
+            "url": "http:/example.com/page1.html",
+            "counts": [
+              "749614"
+            ],
+            "name": "page1"
+          },
+          {
+            "url": "page1http:/example.com/page2.html",
+            "counts": [
+              "1672"
+            ],
+            "name": "page2"
+          },
+          {
+            "url": "http:/example.com/page3.html",
+            "counts": [
+              "24"
+            ],
+            "name": "page3"
+          },
+          {
+            "url": "http:/example.com/page4.html",
+            "counts": [
+              "26"
+            ],
+            "name": "authorize|prod"
+          },
+          {
+            "url": "http:/example.com/page5.html",
+            "counts": [
+              "5"
+            ],
+            "name": "page5"
+          },
+          {
+            "url": "http:/example.com/page6.html",
+            "counts": [
+              "0"
+            ],
+            "name": "page6"
+          }
+        ],
+        "name": "Sun.  4 Sep. 2016 (Hour 16)",
+        "hour": 16,
+        "breakdownTotal": [
+          "751341"
+        ],
+        "month": 9,
+        "year": 2016,
+        "day": 4
+      },
+      {
+        "breakdown": [
+          {
+            "url": "http:/example.com/page1.html",
+            "counts": [
+              "693445"
+            ],
+            "name": "page1"
+          },
+          {
+            "url": "page1http:/example.com/page2.html",
+            "counts": [
+              "1661"
+            ],
+            "name": "page2"
+          },
+          {
+            "url": "http:/example.com/page3.html",
+            "counts": [
+              "24"
+            ],
+            "name": "page3"
+          },
+          {
+            "url": "http:/example.com/page4.html",
+            "counts": [
+              "24"
+            ],
+            "name": "authorize|prod"
+          },
+          {
+            "url": "http:/example.com/page5.html",
+            "counts": [
+              "4"
+            ],
+            "name": "page5"
+          },
+          {
+            "url": "http:/example.com/page6.html",
+            "counts": [
+              "6"
+            ],
+            "name": "page6"
+          }
+        ],
+        "name": "Sun.  4 Sep. 2016 (Hour 17)",
+        "hour": 17,
+        "breakdownTotal": [
+          "695164"
+        ],
+        "month": 9,
+        "year": 2016,
+        "day": 4
+      },
+      {
+        "breakdown": [
+          {
+            "url": "http:/example.com/page1.html",
+            "counts": [
+              "0"
+            ],
+            "name": "page1"
+          },
+          {
+            "url": "page1http:/example.com/page2.html",
+            "counts": [
+              "0"
+            ],
+            "name": "page2"
+          },
+          {
+            "url": "http:/example.com/page3.html",
+            "counts": [
+              "0"
+            ],
+            "name": "page3"
+          },
+          {
+            "url": "http:/example.com/page4.html",
+            "counts": [
+              "0"
+            ],
+            "name": "authorize|prod"
+          },
+          {
+            "url": "http:/example.com/page5.html",
+            "counts": [
+              "0"
+            ],
+            "name": "page5"
+          },
+          {
+            "url": "http:/example.com/page6.html",
+            "counts": [
+              "0"
+            ],
+            "name": "page6"
+          }
+        ],
+        "name": "Sun.  4 Sep. 2016 (Hour 18)",
+        "hour": 18,
+        "breakdownTotal": [
+          "0"
+        ],
+        "month": 9,
+        "year": 2016,
+        "day": 4
+      },
+      {
+        "breakdown": [
+          {
+            "url": "http:/example.com/page1.html",
+            "counts": [
+              "0"
+            ],
+            "name": "page1"
+          },
+          {
+            "url": "page1http:/example.com/page2.html",
+            "counts": [
+              "0"
+            ],
+            "name": "page2"
+          },
+          {
+            "url": "http:/example.com/page3.html",
+            "counts": [
+              "0"
+            ],
+            "name": "page3"
+          },
+          {
+            "url": "http:/example.com/page4.html",
+            "counts": [
+              "0"
+            ],
+            "name": "authorize|prod"
+          },
+          {
+            "url": "http:/example.com/page5.html",
+            "counts": [
+              "0"
+            ],
+            "name": "page5"
+          },
+          {
+            "url": "http:/example.com/page6.html",
+            "counts": [
+              "0"
+            ],
+            "name": "page6"
+          }
+        ],
+        "name": "Sun.  4 Sep. 2016 (Hour 19)",
+        "hour": 19,
+        "breakdownTotal": [
+          "0"
+        ],
+        "month": 9,
+        "year": 2016,
+        "day": 4
+      },
+      {
+        "breakdown": [
+          {
+            "url": "http:/example.com/page1.html",
+            "counts": [
+              "0"
+            ],
+            "name": "page1"
+          },
+          {
+            "url": "page1http:/example.com/page2.html",
+            "counts": [
+              "0"
+            ],
+            "name": "page2"
+          },
+          {
+            "url": "http:/example.com/page3.html",
+            "counts": [
+              "0"
+            ],
+            "name": "page3"
+          },
+          {
+            "url": "http:/example.com/page4.html",
+            "counts": [
+              "0"
+            ],
+            "name": "authorize|prod"
+          },
+          {
+            "url": "http:/example.com/page5.html",
+            "counts": [
+              "0"
+            ],
+            "name": "page5"
+          },
+          {
+            "url": "http:/example.com/page6.html",
+            "counts": [
+              "0"
+            ],
+            "name": "page6"
+          }
+        ],
+        "name": "Sun.  4 Sep. 2016 (Hour 20)",
+        "hour": 20,
+        "breakdownTotal": [
+          "0"
+        ],
+        "month": 9,
+        "year": 2016,
+        "day": 4
+      },
+      {
+        "breakdown": [
+          {
+            "url": "http:/example.com/page1.html",
+            "counts": [
+              "0"
+            ],
+            "name": "page1"
+          },
+          {
+            "url": "page1http:/example.com/page2.html",
+            "counts": [
+              "0"
+            ],
+            "name": "page2"
+          },
+          {
+            "url": "http:/example.com/page3.html",
+            "counts": [
+              "0"
+            ],
+            "name": "page3"
+          },
+          {
+            "url": "http:/example.com/page4.html",
+            "counts": [
+              "0"
+            ],
+            "name": "authorize|prod"
+          },
+          {
+            "url": "http:/example.com/page5.html",
+            "counts": [
+              "0"
+            ],
+            "name": "page5"
+          },
+          {
+            "url": "http:/example.com/page6.html",
+            "counts": [
+              "0"
+            ],
+            "name": "page6"
+          }
+        ],
+        "name": "Sun.  4 Sep. 2016 (Hour 21)",
+        "hour": 21,
+        "breakdownTotal": [
+          "0"
+        ],
+        "month": 9,
+        "year": 2016,
+        "day": 4
+      },
+      {
+        "breakdown": [
+          {
+            "url": "http:/example.com/page1.html",
+            "counts": [
+              "0"
+            ],
+            "name": "page1"
+          },
+          {
+            "url": "page1http:/example.com/page2.html",
+            "counts": [
+              "0"
+            ],
+            "name": "page2"
+          },
+          {
+            "url": "http:/example.com/page3.html",
+            "counts": [
+              "0"
+            ],
+            "name": "page3"
+          },
+          {
+            "url": "http:/example.com/page4.html",
+            "counts": [
+              "0"
+            ],
+            "name": "authorize|prod"
+          },
+          {
+            "url": "http:/example.com/page5.html",
+            "counts": [
+              "0"
+            ],
+            "name": "page5"
+          },
+          {
+            "url": "http:/example.com/page6.html",
+            "counts": [
+              "0"
+            ],
+            "name": "page6"
+          }
+        ],
+        "name": "Sun.  4 Sep. 2016 (Hour 22)",
+        "hour": 22,
+        "breakdownTotal": [
+          "0"
+        ],
+        "month": 9,
+        "year": 2016,
+        "day": 4
+      },
+      {
+        "breakdown": [
+          {
+            "url": "http:/example.com/page1.html",
+            "counts": [
+              "0"
+            ],
+            "name": "page1"
+          },
+          {
+            "url": "page1http:/example.com/page2.html",
+            "counts": [
+              "0"
+            ],
+            "name": "page2"
+          },
+          {
+            "url": "http:/example.com/page3.html",
+            "counts": [
+              "0"
+            ],
+            "name": "page3"
+          },
+          {
+            "url": "http:/example.com/page4.html",
+            "counts": [
+              "0"
+            ],
+            "name": "authorize|prod"
+          },
+          {
+            "url": "http:/example.com/page5.html",
+            "counts": [
+              "0"
+            ],
+            "name": "page5"
+          },
+          {
+            "url": "http:/example.com/page6.html",
+            "counts": [
+              "0"
+            ],
+            "name": "page6"
+          }
+        ],
+        "name": "Sun.  4 Sep. 2016 (Hour 23)",
+        "hour": 23,
+        "breakdownTotal": [
+          "0"
+        ],
+        "month": 9,
+        "year": 2016,
+        "day": 4
+      }
+    ],
+    "period": "Sun.  4 Sep. 2016",
+    "totals": [
+      "13496206"
+    ],
+    "metrics": [
+      {
+        "latency": 2847,
+        "name": "Page Views",
+        "type": "number",
+        "current": false,
+        "decimals": 0,
+        "id": "pageviews"
+      }
+    ],
+    "version": "1.4.16.7",
+    "reportSuite": {
+      "id": "omniture.api-gateway",
+      "name": "API Gateway (omniture.api-gateway)"
+    },
+    "type": "trended"
+  },
+  "waitSeconds": "0.552",
+  "runSeconds": "5.077"
+}

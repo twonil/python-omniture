@@ -10,8 +10,9 @@ import uuid
 import hashlib
 import base64
 import os
+from datetime import datetime
 
-from .elements import Value, Element, Segment
+from .elements import Value
 from .query import Query
 from . import reports
 from . import utils
@@ -24,6 +25,7 @@ class Account(object):
     def __init__(self, username, secret, endpoint=DEFAULT_ENDPOINT, cache=False, cache_key=None):
         """Authentication to make requests."""
         self.log = logging.getLogger(__name__)
+        self.log.info(datetime.now().strftime("%Y-%m-%d %I%p:%M:%S"))
         self.username = username
         self.secret = secret
         self.endpoint = endpoint
@@ -185,7 +187,7 @@ class Suite(Value):
             data = self.request_cached('Report', 'GetElements')
         else:
             data = self.request('Report', 'GetElements')
-        return Element.list('elements', data, self, 'name', 'id')
+        return Value.list('elements', data, self, 'name', 'id')
 
     @property
     @utils.memoize
@@ -195,7 +197,7 @@ class Suite(Value):
             data = self.request_cached('Segments', 'Get',{"accessLevel":"shared"})
         else:
             data = self.request('Segments', 'Get',{"accessLevel":"shared"})
-        return Segment.list('segments', data, self, 'name', 'id',)
+        return Value.list('segments', data, self, 'name', 'id',)
 
     @property
     def report(self):

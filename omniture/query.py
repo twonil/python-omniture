@@ -195,6 +195,7 @@ class Query(object):
         After the first element, each additional element is considered
             a breakdown
         """
+
         if self.raw.get('elements', None) == None:
             self.raw['elements'] = []
 
@@ -261,15 +262,6 @@ class Query(object):
         self.raw['currentData'] = True
         return self
 
-    # TODO: data warehouse reports are a work in progress
-    @immutable
-    def data(self, metrics, breakdowns):
-        self.report = reports.DataWarehouseReport
-        self.raw['metrics'] = self._serialize_values(metrics, 'metrics')
-        # TODO: haven't figured out how breakdowns work yet
-        self.raw['breakdowns'] = False
-        return self
-
 
     def build(self):
         """ Return the report descriptoin as an object """
@@ -316,14 +308,16 @@ class Query(object):
                     #raise reports.InvalidReportError(response)
 
             #Use a back off up to 30 seconds to play nice with the APIs
-            if interval < 30:
+            if interval < 1:
+                interval = 1
+            elif interval < 30:
                 interval = round(interval * 1.5)
             else:
                 interval = 30
             self.log.debug("Check Interval: %s seconds", interval)
 
     # only for SiteCatalyst queries
-    def sync(self, heartbeat=None, interval=1):
+    def sync(self, heartbeat=None, interval=0.01):
         """ Run the report synchronously,"""
         if not self.id:
             self.queue()
@@ -337,7 +331,7 @@ class Query(object):
         return self.report(response, self)
 
     #shortcut to run a report immediately
-    def run(self, defaultheartbeat=True, heartbeat=None, interval=1):
+    def run(self, defaultheartbeat=True, heartbeat=None, interval=0.01):
         """Shortcut for sync(). Runs the current report synchronously. """
         if defaultheartbeat == True:
             rheartbeat = self.heartbeat
@@ -358,18 +352,10 @@ class Query(object):
 
         raise NotImplementedError()
 
-    # only for Data Warehouse queries
-    def request(self, name='python-omniture query', ftp=None, email=None):
-        raise NotImplementedError()
 
     def cancel(self):
         """ Cancels a the report from the Queue on the Adobe side. """
-        if self.report == reports.DataWarehouseReport:
-            return self.suite.request('DataWarehouse',
-                                      'CancelRequest',
-                                      {'Request_Id': self.id})
-        else:
-            return self.suite.request('Report',
+        return self.suite.request('Report',
                                       'CancelReport',
                                       {'reportID': self.id})
     def json(self):
@@ -381,13 +367,16 @@ class Query(object):
 
     def _repr_html_(self):
         """ Format in HTML for iPython Users """
+        report = { str(key):value for key,value in self.raw.items() }
+        print(report)
         html = "Current Report Settings</br>"
-        for key, value in self.raw:
-            html += "<b>{0}</b>: {1} </br>".format(key, value)
+        for k,v in sorted(list(report.items())):
+            html += "<b>{0}</b>: {1} </br>".format(k,v)
         if self.id:
             html += "This report has been submitted</br>"
             html += "<b>{0}</b>: {1} </br>".format("ReportId", self.id)
         return html
+
 
     def __dir__(self):
         """ Give sensible options for Tab Completion mostly for iPython """
