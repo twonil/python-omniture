@@ -22,7 +22,7 @@ class Value(object):
 
     @classmethod
     def list(cls, name, items, parent, title='title', id='id'):
-        values = [cls(item[title], item[id], parent, item) for item in items]
+        values = [cls(item[title], str(item[id]), parent, item) for item in items]
         return utils.AddressableList(values, name)
 
     def __repr__(self):

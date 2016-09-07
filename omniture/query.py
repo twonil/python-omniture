@@ -195,6 +195,7 @@ class Query(object):
         After the first element, each additional element is considered
             a breakdown
         """
+
         if self.raw.get('elements', None) == None:
             self.raw['elements'] = []
 
@@ -366,13 +367,16 @@ class Query(object):
 
     def _repr_html_(self):
         """ Format in HTML for iPython Users """
+        report = { str(key):value for key,value in self.raw.items() }
+        print(report)
         html = "Current Report Settings</br>"
-        for key, value in list(self.raw.items()):
-            html += "<b>{0}</b>: {1} </br>".format(key, value)
+        for k,v in sorted(list(report.items())):
+            html += "<b>{0}</b>: {1} </br>".format(k,v)
         if self.id:
             html += "This report has been submitted</br>"
             html += "<b>{0}</b>: {1} </br>".format("ReportId", self.id)
         return html
+
 
     def __dir__(self):
         """ Give sensible options for Tab Completion mostly for iPython """

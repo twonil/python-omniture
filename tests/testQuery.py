@@ -44,6 +44,9 @@ class QueryTest(unittest.TestCase):
             self.analytics.suites[test_report_suite].elements
             self.analytics.suites[test_report_suite].segments
 
+    def tearDown(self):
+        self.analytics = None
+
     def test_ranked(self):
         """Test that a basic query can be generated """
         basic_report = self.analytics.suites[test_report_suite].report.element("page")
@@ -312,10 +315,11 @@ class QueryTest(unittest.TestCase):
 
     def test_repr_html_(self):
         """Make sure the HTML representation fo iPython is working corretly"""
-        valid_html = "Current Report Settings</br><b>elements</b>: [{'id': u'page'}] </br><b>reportSuiteID</b>: "+test_report_suite+" </br>"
+        valid_html = "Current Report Settings</br><b>elements</b>: [{'id': 'page'}] </br><b>metrics</b>: [{'id': 'pageviews'}] </br><b>reportSuiteID</b>: "+test_report_suite+" </br>"
         test_html = self.analytics.suites[test_report_suite]\
             .report\
             .element('page')\
+            .metric('pageviews')\
             ._repr_html_()
 
 
@@ -326,15 +330,16 @@ class QueryTest(unittest.TestCase):
         def test_repr_html_report_id(self):
             """Make sure the HTML representation fo iPython is working corretly
             with a report id"""
-            valid_html = "Current Report Settings</br><b>elements</b>: [{'id': u'page'}] </br><b>reportSuiteID</b>: "+test_report_suite+" </br>This report has been submitted</br><b>ReportId</b>: 123 </br>"
+            valid_html = "Current Report Settings</br><b>elements</b>: [{'id': 'page'}] </br><b>metrics</b>: [{'id': 'pageviews'}] </br><b>reportSuiteID</b>: "+test_report_suite+" </br>This report has been submitted</br><b>ReportId</b>: 123 </br>"
             test_html = self.analytics.suites[test_report_suite]\
                 .report\
-                .element('page')
+                .element('page')\
+                .metric('pageviews')
             test_html.id = "123"
             test_html = test_html._repr_html_()
 
 
-            self.assertEqual(test_html,valid_html,
+            self.assertEqual(str(test_html),valid_html,
                              "the HTML isn't generating correctly: {}"
                              .format(test_html))
 
