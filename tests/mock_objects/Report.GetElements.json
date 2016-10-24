@@ -1,0 +1,20 @@
+[
+  {
+    "subrelation": false,
+    "correlation": true,
+    "id": "page",
+    "name": "Page"
+  },
+  {
+    "subrelation": false,
+    "correlation": true,
+    "id": "sitesection",
+    "name": "Site Section"
+  },
+  {
+    "subrelation": false,
+    "correlation": true,
+    "id": "browser",
+    "name": "Browser"
+  }
+]

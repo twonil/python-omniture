@@ -1,0 +1,9 @@
+[run]
+branch = True
+
+[report]
+# Regexes for lines to exclude from consideration
+
+include =
+  omniture/__init__.py
+  omniture/[A-z]*.py

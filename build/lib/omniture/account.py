@@ -1,8 +1,8 @@
 from __future__ import absolute_import
+from __future__ import print_function
 
 import requests
 import binascii
-import sha
 import json
 from datetime import datetime, date
 import logging
@@ -10,8 +10,9 @@ import uuid
 import hashlib
 import base64
 import os
+from datetime import datetime
 
-from .elements import Value, Element, Segment
+from .elements import Value
 from .query import Query
 from . import reports
 from . import utils
@@ -24,6 +25,7 @@ class Account(object):
     def __init__(self, username, secret, endpoint=DEFAULT_ENDPOINT, cache=False, cache_key=None):
         """Authentication to make requests."""
         self.log = logging.getLogger(__name__)
+        self.log.info(datetime.now().strftime("%Y-%m-%d %I%p:%M:%S"))
         self.username = username
         self.secret = secret
         self.endpoint = endpoint
@@ -123,13 +125,14 @@ class Account(object):
         nonce = str(uuid.uuid4())
         base64nonce = binascii.b2a_base64(binascii.a2b_qp(nonce))
         created_date = datetime.utcnow().isoformat() + 'Z'
-        sha_object = sha.new(nonce + created_date + self.secret)
+        sha = nonce + created_date + self.secret
+        sha_object = hashlib.sha1(sha.encode())
         password_64 = binascii.b2a_base64(sha_object.digest())
 
         properties = {
             "Username": self.username,
-            "PasswordDigest": password_64.strip(),
-            "Nonce": base64nonce.strip(),
+            "PasswordDigest": password_64.decode().strip(),
+            "Nonce": base64nonce.decode().strip(),
             "Created": created_date,
         }
         header = 'UsernameToken ' + self._serialize_header(properties)
@@ -184,7 +187,7 @@ class Suite(Value):
             data = self.request_cached('Report', 'GetElements')
         else:
             data = self.request('Report', 'GetElements')
-        return Element.list('elements', data, self, 'name', 'id')
+        return Value.list('elements', data, self, 'name', 'id')
 
     @property
     @utils.memoize
@@ -194,7 +197,7 @@ class Suite(Value):
             data = self.request_cached('Segments', 'Get',{"accessLevel":"shared"})
         else:
             data = self.request('Segments', 'Get',{"accessLevel":"shared"})
-        return Segment.list('segments', data, self, 'name', 'id',)
+        return Value.list('segments', data, self, 'name', 'id',)
 
     @property
     def report(self):
@@ -210,52 +213,52 @@ class Suite(Value):
 
         reportJSON = reportJSON['reportDescription']
 
-        if reportJSON.has_key('dateFrom') and reportJSON.has_key('dateTo'):
+        if 'dateFrom' in reportJSON and 'dateTo' in reportJSON:
             q = q.range(reportJSON['dateFrom'],reportJSON['dateTo'])
-        elif reportJSON.has_key('dateFrom'):
+        elif 'dateFrom' in reportJSON:
             q = q.range(reportJSON['dateFrom'])
-        elif reportJSON.has_key('date'):
+        elif 'date' in reportJSON:
             q = q.range(reportJSON['date'])
         else:
             q = q
 
-        if reportJSON.has_key('dateGranularity'):
+        if 'dateGranularity' in reportJSON:
             q = q.granularity(reportJSON['dateGranularity'])
 
-        if reportJSON.has_key('source'):
+        if 'source' in reportJSON:
             q = q.set('source',reportJSON['source'])
 
-        if reportJSON.has_key('metrics'):
+        if 'metrics' in reportJSON:
             for m in reportJSON['metrics']:
                 q = q.metric(m['id'])
 
-        if reportJSON.has_key('elements'):
+        if 'elements' in reportJSON:
             for e in reportJSON['elements']:
                 id = e['id']
                 del e['id']
                 q= q.element(id, **e)
 
-        if reportJSON.has_key('locale'):
+        if 'locale' in reportJSON:
             q = q.set('locale',reportJSON['locale'])
 
-        if reportJSON.has_key('sortMethod'):
+        if 'sortMethod' in reportJSON:
             q = q.set('sortMethod',reportJSON['sortMethod'])
 
-        if reportJSON.has_key('sortBy'):
+        if 'sortBy' in reportJSON:
             q = q.sortBy(reportJSON['sortBy'])
 
         #WARNING This doesn't carry over segment IDs meaning you can't manipulate the segments in the new object
         #TODO Loop through and add segment ID with filter method (need to figure out how to handle combined)
-        if reportJSON.has_key('segments'):
+        if 'segments' in reportJSON:
             q = q.set('segments', reportJSON['segments'])
 
-        if reportJSON.has_key('anomalyDetection'):
+        if 'anomalyDetection' in reportJSON:
             q = q.set('anomalyDetection',reportJSON['anomalyDetection'])
 
-        if reportJSON.has_key('currentData'):
+        if 'currentData' in reportJSON:
             q = q.set('currentData',reportJSON['currentData'])
 
-        if reportJSON.has_key('elementDataEncoding'):
+        if 'elementDataEncoding' in reportJSON:
             q = q.set('elementDataEncoding',reportJSON['elementDataEncoding'])
         return q
 

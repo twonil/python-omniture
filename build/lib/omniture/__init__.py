@@ -4,26 +4,27 @@ from __future__ import absolute_import
 import os
 import json
 import logging.config
+import io
 
 from .account import Account, Suite
-from .elements import Value, Element, Segment
+from .elements import Value
 from .query import Query
 from .reports import InvalidReportError, Report, DataWarehouseReport
 from .version import __version__
-from . import utils
+from .utils import AddressableList, affix
 
 
 def authenticate(username, secret=None, endpoint=Account.DEFAULT_ENDPOINT, prefix='', suffix=''):
     """ Authenticate to the Adobe API using WSSE """
     #setup logging
     setup_logging()
-    # if no secret is specified, we will assume that instead 
+    # if no secret is specified, we will assume that instead
     # we have received a dictionary with credentials (such as
     # from os.environ)
     if not secret:
         source = username
-        key_to_username = utils.affix(prefix, 'OMNITURE_USERNAME', suffix)
-        key_to_secret = utils.affix(prefix, 'OMNITURE_SECRET', suffix)
+        key_to_username = affix(prefix, 'OMNITURE_USERNAME', suffix)
+        key_to_secret = affix(prefix, 'OMNITURE_SECRET', suffix)
         username = source[key_to_username]
         secret = source[key_to_secret]
 
@@ -40,20 +41,20 @@ def queue(queries):
 
 def sync(queries, heartbeat=None, interval=1):
     """
-    `omniture.sync` will queue a number of reports and then 
+    `omniture.sync` will queue a number of reports and then
     block until the results are all ready.
 
-    Queueing reports is idempotent, meaning that you can also 
-    use `omniture.sync` to fetch the results for queries that 
-    have already been queued: 
+    Queueing reports is idempotent, meaning that you can also
+    use `omniture.sync` to fetch the results for queries that
+    have already been queued:
 
         query = mysuite.report.range('2013-06-06').over_time('pageviews', 'page')
         omniture.queue(query)
         omniture.sync(query)
-        
+
     The interval will operate under an exponetial decay until it reaches 5 minutes. At which point it will ping every 5 minutes
     """
-    
+
     queue(queries)
 
     if isinstance(queries, list):
@@ -73,11 +74,12 @@ def setup_logging(default_path='logging.json', default_level=logging.INFO, env_k
     if value:
         path = value
     if os.path.exists(path):
-        with open(path, 'rt') as f:
+        with io.open(path, 'rt') as f:
             config = json.load(f)
+        f.close()
         logging.config.dictConfig(config)
         requests_log = logging.getLogger("requests")
         requests_log.setLevel(logging.WARNING)
-        
+
     else:
         logging.basicConfig(level=default_level)

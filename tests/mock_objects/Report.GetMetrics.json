@@ -1,0 +1,37 @@
+[
+  {
+    "formula": null,
+    "decimals": 0,
+    "type": "number",
+    "id": "pageviews",
+    "name": "Page Views"
+  },
+  {
+    "formula": null,
+    "decimals": 0,
+    "type": "number",
+    "id": "visits",
+    "name": "Visits"
+  },
+  {
+    "formula": null,
+    "decimals": 0,
+    "type": "number",
+    "id": "uniquevisitors",
+    "name": "Unique Visitors"
+  },
+  {
+    "formula": null,
+    "decimals": 0,
+    "type": "number",
+    "id": "orders",
+    "name": "Orders"
+  },
+  {
+    "formula": null,
+    "decimals": 0,
+    "type": "decimal",
+    "id": "cm4157_55884bf6e4b018bc0b732e55",
+    "name": "Page Views / Visit"
+  }
+]

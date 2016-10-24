@@ -1,5 +1,6 @@
 # encoding: utf-8
 from __future__ import absolute_import
+from __future__ import print_function
 
 import time
 from copy import copy, deepcopy
@@ -159,12 +160,12 @@ class Query(object):
         # It would appear to me that 'segment_id' has a strict subset
         # of the functionality of 'segments', but until I find out for
         # sure, I'll provide both options.
-        if not self.raw.has_key('segments'):
+        if 'segments' not in self.raw:
             self.raw['segments'] = []
 
         if disable_validation == False:
             if segments:
-                self.raw['segments'].append(self._serialize_values(segments, 'segments'))
+                self.raw['segments'].extend(self._serialize_values(segments, 'segments'))
             elif segment:
                 self.raw['segments'].append({"id":self._normalize_value(segment,
                                                                             'segments').id})
@@ -175,7 +176,7 @@ class Query(object):
 
         else:
             if segments:
-                self.raw['segments'].append(segments)
+                self.raw['segments'].extend([{"id":segment} for segment in segments])
             elif segment:
                 self.raw['segments'].append({"id":segment})
             elif kwargs:
@@ -194,6 +195,7 @@ class Query(object):
         After the first element, each additional element is considered
             a breakdown
         """
+
         if self.raw.get('elements', None) == None:
             self.raw['elements'] = []
 
@@ -209,10 +211,11 @@ class Query(object):
         #TODO allow this method to accept a list
         return self
 
-    @immutable
+
     def breakdown(self, element, **kwargs):
         """ Pass through for element. Adds an element to the report. """
         return self.element(element, **kwargs)
+
 
     def elements(self, *args, **kwargs):
         """ Shortcut for adding multiple elements. Doesn't support arguments """
@@ -258,15 +261,6 @@ class Query(object):
     def currentData(self):
         """ Set the currentData flag """
         self.raw['currentData'] = True
-        return self
-
-    # TODO: data warehouse reports are a work in progress
-    @immutable
-    def data(self, metrics, breakdowns):
-        self.report = reports.DataWarehouseReport
-        self.raw['metrics'] = self._serialize_values(metrics, 'metrics')
-        # TODO: haven't figured out how breakdowns work yet
-        self.raw['breakdowns'] = False
         return self
 
 
@@ -315,14 +309,16 @@ class Query(object):
                     #raise reports.InvalidReportError(response)
 
             #Use a back off up to 30 seconds to play nice with the APIs
-            if interval < 30:
+            if interval < 1:
+                interval = 1
+            elif interval < 30:
                 interval = round(interval * 1.5)
             else:
                 interval = 30
             self.log.debug("Check Interval: %s seconds", interval)
 
     # only for SiteCatalyst queries
-    def sync(self, heartbeat=None, interval=1):
+    def sync(self, heartbeat=None, interval=0.01):
         """ Run the report synchronously,"""
         if not self.id:
             self.queue()
@@ -336,7 +332,7 @@ class Query(object):
         return self.report(response, self)
 
     #shortcut to run a report immediately
-    def run(self, defaultheartbeat=True, heartbeat=None, interval=1):
+    def run(self, defaultheartbeat=True, heartbeat=None, interval=0.01):
         """Shortcut for sync(). Runs the current report synchronously. """
         if defaultheartbeat == True:
             rheartbeat = self.heartbeat
@@ -357,36 +353,30 @@ class Query(object):
 
         raise NotImplementedError()
 
-    # only for Data Warehouse queries
-    def request(self, name='python-omniture query', ftp=None, email=None):
-        raise NotImplementedError()
 
     def cancel(self):
         """ Cancels a the report from the Queue on the Adobe side. """
-        if self.report == reports.DataWarehouseReport:
-            return self.suite.request('DataWarehouse',
-                                      'CancelRequest',
-                                      {'Request_Id': self.id})
-        else:
-            return self.suite.request('Report',
+        return self.suite.request('Report',
                                       'CancelReport',
                                       {'reportID': self.id})
     def json(self):
         """ Return a JSON string of the Request """
-        return str(json.dumps(self.build(), indent=4, separators=(',', ': ')))
+        return str(json.dumps(self.build(), indent=4, separators=(',', ': '), sort_keys=True))
 
     def __str__(self):
         return self.json()
 
     def _repr_html_(self):
         """ Format in HTML for iPython Users """
+        report = { str(key):value for key,value in self.raw.items() }
         html = "Current Report Settings</br>"
-        for key, value in self.raw.iteritems():
-            html += "<b>{0}</b>: {1} </br>".format(key, value)
+        for k,v in sorted(list(report.items())):
+            html += "<b>{0}</b>: {1} </br>".format(k,v)
         if self.id:
             html += "This report has been submitted</br>"
             html += "<b>{0}</b>: {1} </br>".format("ReportId", self.id)
         return html
+
 
     def __dir__(self):
         """ Give sensible options for Tab Completion mostly for iPython """

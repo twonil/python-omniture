@@ -4,3 +4,6 @@
 dist
 *-jgrover*
 *.log
+.coverage
+coverage.xml
+htmlcov

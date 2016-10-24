@@ -1,5 +1,6 @@
 # encoding: utf-8
 from __future__ import absolute_import
+from __future__ import print_function
 
 import logging
 from datetime import datetime
@@ -14,7 +15,7 @@ class InvalidReportError(Exception):
     invalid
     """
     def normalize(self, error):
-        print 'error', error
+        print ('error', error)
         return {
             'error': error.get('error'),
             'error_description': error.get('error_description'),
@@ -123,13 +124,13 @@ class Report(object):
             elif self.type == "trended":
                 if hasattr(self.elements[level-1], 'classification'):
                     #handle the case where there are multiple classifications
-                    element = str(self.elements[level-1].id) + ' | ' + str(self.elements[level-1].classification).encode('utf-8')
+                    element = str(self.elements[level-1].id) + ' | ' + str(self.elements[level-1].classification)
                 else:
                     element = str(self.elements[level-1].id)
             else:
                 if hasattr(self.elements[level], 'classification'):
                     #handle the case where there are multiple classifications
-                    element = str(self.elements[level].id) + ' | ' + str(self.elements[level].classification).encode('utf-8')
+                    element = str(self.elements[level].id) + ' | ' + str(self.elements[level].classification)
                 else:
                     element = str(self.elements[level].id)
 
@@ -139,15 +140,15 @@ class Report(object):
                 data["datetime_friendly"] = str(row['name'])
             else:
                 try:
-                    data[element] = row['name'].encode('utf-8')
+                    data[element] = str(row['name'])
 
                 # If the name value is Null or non-encodable value, return null
                 except:
                     data[element] = "null"
             #parse out any breakdowns and add to the data set
-            if row.has_key('breakdown') and len(row['breakdown']) > 0:
+            if 'breakdown' in row and len(row['breakdown']) > 0:
                 data_set.extend(self.parse_rows(row['breakdown'], level+1, data))
-            elif row.has_key('counts'):
+            elif 'counts' in row:
                 for index, metric in enumerate(row['counts']):
                         #decide what type of event
                         if self.metrics[index].decimals > 0 or metric.find('.') >-1:
@@ -180,19 +181,6 @@ class Report(object):
         import pandas as pd
         return pd.DataFrame.from_dict(self.data)
 
-
-    def serialize(self, verbose=False):
-        if verbose:
-            facet = 'title'
-        else:
-            facet = 'id'
-
-        d = {}
-        for el in self.data:
-            key = getattr(el, facet)
-            d[key] = el.value
-        return d
-
     def __init__(self, raw, query):
         self.log = logging.getLogger(__name__)
         self.raw = raw
@@ -205,7 +193,7 @@ class Report(object):
             'metrics': ", ".join(map(str, self.metrics)),
             'elements': ", ".join(map(str, self.elements)),
         }
-        return "<omniture.Report (metrics) {metrics} (elements) {elements}>".format(**info)
+        return "<omniture.Report\n(metrics)\n{metrics}(elements)\n{elements}>".format(**info)
 
     def __div__(self):
         """ Give sensible options for Tab Completion mostly for iPython """
@@ -219,23 +207,24 @@ class Report(object):
             #populate header Row
             if index < 1:
                 html += "<tr>"
-                if item.has_key('datetime'):
+                if 'datetime' in item:
                     html += "<td><b>{0}<b></td>".format('datetime')
-                for key in item:
+                for key in sorted(list(item.keys())):
                     if key != 'datetime':
                         html += "<td><b>{0}<b></td>".format(key)
                 html += "</tr><tr>"
 
             #Make sure date time is alway listed first
-            if item.has_key('datetime'):
+            if 'datetime' in item:
                 html += "<td>{0}</td>".format(item['datetime'])
-            for key, value in item.iteritems():
+            for key, value in sorted(list(item.items())):
                 if key != 'datetime':
                     html += "<td>{0}</td>".format(value)
+        html += "</html>"
         return html
 
     def __str__(self):
-        return json.dumps(self.raw,indent=4, separators=(',', ': '))
+        return json.dumps(self.raw,indent=4, separators=(',', ': '),sort_keys=True)
 
 Report.method = "Queue"
 
