@@ -7,6 +7,7 @@ cache:
 before_install:
     - export TZ=America/Denver
 install:
+    - pip install --upgrade pip
     - pip install codecov
     - pip install .
     - pip install -r requirements.txt
