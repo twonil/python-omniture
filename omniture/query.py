@@ -24,6 +24,14 @@ def immutable(method):
 
     return wrapped_method
 
+class ReportNotSubmittedError(Exception):
+    """ Exception that is raised when a is requested by hasn't been submitted 
+        to Adobe
+    """
+    def __init__(self,error):
+        self.log = logging.getLogger(__name__)
+        self.log.debug("Report Has not been submitted, call async() or run()")
+        super(ReportNotSubmittedError, self).__init__("Report Not Submitted")
 
 class Query(object):
     """ Lets you build a query to the Reporting API for Adobe Analytics.
@@ -38,6 +46,7 @@ class Query(object):
     """
 
     GRANULARITY_LEVELS = ['hour', 'day', 'week', 'month', 'quarter', 'year']
+    STATUSES = ["Not Submitted","Not Ready","Done"]
 
     def __init__(self, suite):
         """ Setup the basic structure of the report query. """
@@ -48,8 +57,13 @@ class Query(object):
         #the raw query and have it work as is
         self.raw['reportSuiteID'] = str(self.suite.id)
         self.id = None
-        self.report = reports.Report
         self.method = "Get"
+        self.status = self.STATUSES[0]
+        #The report object
+        self.report = reports.Report
+        #The fully hydrated report object
+        self.processed_response = None  
+        self.unprocessed_response = None
 
     def _normalize_value(self, value, category):
         if isinstance(value, Value):
@@ -79,6 +93,9 @@ class Query(object):
         query = Query(self.suite)
         query.raw = copy(self.raw)
         query.report = self.report
+        query.status = self.status
+        query.processed_response = self.processed_response
+        query.unprocessed_response = self.unprocessed_response
         return query
 
     @immutable
@@ -266,18 +283,7 @@ class Query(object):
 
     def build(self):
         """ Return the report descriptoin as an object """
-        if self.report == reports.DataWarehouseReport:
-            return utils.translate(self.raw, {
-                'metrics': 'Metric_List',
-                'breakdowns': 'Breakdown_List',
-                'dateFrom': 'Date_From',
-                'dateTo': 'Date_To',
-                # is this the correct mapping?
-                'date': 'Date_Preset',
-                'dateGranularity': 'Date_Granularity',
-                })
-        else:
-            return {'reportDescription': self.raw}
+        return {'reportDescription': self.raw}
 
     def queue(self):
         """ Submits the report to the Queue on the Adobe side. """
@@ -287,27 +293,16 @@ class Query(object):
         self.id = self.suite.request('Report',
                                      self.report.method,
                                      q)['reportID']
+        self.status = self.STATUSES[1]
         return self
 
-    def probe(self, fn, heartbeat=None, interval=1, soak=False):
-        """ Evaluate the response of a report"""
-        status = 'not ready'
-        while status == 'not ready':
+    def probe(self, heartbeat=None, interval=1, soak=False):
+        """ Keep checking until the report is done"""
+        #Loop until the report is done
+        while self.is_ready() == False:
             if heartbeat:
                 heartbeat()
             time.sleep(interval)
-
-            #Loop until the report is done
-            #(No longer raises the ReportNotReadyError)
-            try:
-                response = fn()
-                status = 'done'
-                return response
-            except reports.ReportNotReadyError:
-                status = 'not ready'
-               # if not soak and status not in ['not ready', 'done', 'ready']:
-                    #raise reports.InvalidReportError(response)
-
             #Use a back off up to 30 seconds to play nice with the APIs
             if interval < 1:
                 interval = 1
@@ -316,22 +311,49 @@ class Query(object):
             else:
                 interval = 30
             self.log.debug("Check Interval: %s seconds", interval)
+            
+    def is_ready(self):
+        """ inspects the response to see if the report is ready """
+        if self.status == self.STATUSES[0]:
+            raise ReportNotSubmittedError('{"message":"Doh! the report needs to be submitted first"}')
+        elif self.status == self.STATUSES[1]:
+            try:
+                # the request method catches the report and populates it automatically
+                response = self.suite.request('Report','Get',{'reportID': self.id})
+                self.status = self.STATUSES[2]
+                self.unprocessed_response = response
+                self.processed_response = self.report(response, self)
+                return True
+            except reports.ReportNotReadyError:
+                self.status = self.STATUSES[1]
+                #raise reports.InvalidReportError(response)
+                return False
+        elif self.status == self.STATUSES[2]:
+            return True
+        
 
-    # only for SiteCatalyst queries
     def sync(self, heartbeat=None, interval=0.01):
         """ Run the report synchronously,"""
-        if not self.id:
+        if self.status == self.STATUSES[0]:
             self.queue()
+            self.probe(heartbeat, interval)
+        if self.status == self.STATUSES[1]:
+            self.probe()
+        return self.processed_response
 
-        # this looks clunky, but Omniture sometimes reports a report
-        # as ready when it's really not
-        get_report = lambda: self.suite.request('Report',
-                                                'Get',
-                                                {'reportID': self.id})
-        response = self.probe(get_report, heartbeat, interval)
-        return self.report(response, self)
-
-    #shortcut to run a report immediately
+    def async(self, callback=None, heartbeat=None, interval=1):
+        """ Run the Report Asynchrnously """
+        if self.status == self.STATUSES[0]:
+            self.queue()
+        return self
+        
+    def get_report(self):
+        self.is_ready()
+        if self.status == self.STATUSES[2]:
+            return self.processed_response
+        else:
+            raise reports.ReportNotReadyError('{"message":"Doh! the report is not ready yet"}')
+        
     def run(self, defaultheartbeat=True, heartbeat=None, interval=0.01):
         """Shortcut for sync(). Runs the current report synchronously. """
         if defaultheartbeat == True:
@@ -346,13 +368,12 @@ class Query(object):
         sys.stdout.write('.')
         sys.stdout.flush()
 
-    # only for SiteCatalyst queries
-    def async(self, callback=None, heartbeat=None, interval=1):
-        if not self.id:
-            self.queue()
 
-        raise NotImplementedError()
-
+    def check(self):
+        """
+            Basically an alias to is ready to make the interface a bit better
+        """
+        return self.is_ready()
 
     def cancel(self):
         """ Cancels a the report from the Queue on the Adobe side. """

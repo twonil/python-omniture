@@ -131,6 +131,11 @@ _Note: to disable the ID check add the parameter `disable_validation=True`_
 
 **run()** -- `run(defaultheartbeat=True)` Run the report and check the queue until done. The `defaultheartbeat` writes a . (period) out to the console each time it checks on the report.
 
+**async()** -- Queue the report to Adobe but don't block the program. Use `is_ready()` to check on the report
+
+**is_ready()** -- Checks if the queued report is finished running on the Adobe side. Can only be called after `async()`
+
+**get_report()** -- Retrieves the report object for a finished report. Must call `is_ready()` first.
 
 **set()** -- `set(key, value)` Set a custom attribute in the report definition
 
@@ -239,6 +244,31 @@ Here's an example:
 ```
 
 `omniture.sync` can queue up (and synchronize) both a list of reports, or a dictionary.
+
+### Running Report Asynchrnously
+If you want to run reports in a way that doesn't block. You can use something like the following to do so. 
+
+```python-omniture
+
+query = suite.report \
+    .range('2017-01-01', '2017-01-31', granularity='day') \
+    .metric('pageviews') \
+    .filter(segment=segment)
+    .async()
+  
+print(query.check())
+#>>>False    
+print(query.check())
+#>>>True
+#The report is now ready to grab
+
+report = query.get_report()
+
+```
+
+This is super helpful if your reports take a long time to run because you don't have to keep your laptop open the whole time, especially if you are doing the queries interactively.
+    
+
 
 ### Making other API requests
 If you need to make other API requests that are not reporting reqeusts you can do so by

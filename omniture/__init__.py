@@ -8,7 +8,7 @@ import io
 
 from .account import Account, Suite
 from .elements import Value
-from .query import Query
+from .query import Query, ReportNotSubmittedError
 from .reports import InvalidReportError, Report, DataWarehouseReport
 from .version import __version__
 from .utils import AddressableList, affix
