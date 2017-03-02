@@ -9,8 +9,8 @@ creds = {}
 creds['username'] = os.environ['OMNITURE_USERNAME']
 creds['secret'] = os.environ['OMNITURE_SECRET']
 test_report_suite = 'omniture.api-gateway'
-dateTo = "2015-06-01"
-dateFrom = "2015-06-02"
+dateTo = "2015-06-02"
+dateFrom = "2015-06-01"
 date = dateTo
 
 
@@ -70,6 +70,26 @@ class QueryTest(unittest.TestCase):
 
 
         self.assertIsInstance(self.analytics.suites[test_report_suite].report.run(), omniture.Report, "The run method doesn't work to create a report")
+        
+    @requests_mock.mock()
+    def test_report_run(self,m):
+        """Make sure that the interval gets passed down. Needs a bit of work to make the test usefule """
+        path = os.path.dirname(__file__)
+
+        with open(path+'/mock_objects/basic_report.json') as data_file:
+            json_response = data_file.read()
+
+        with open(path+'/mock_objects/Report.Queue.json') as queue_file:
+            report_queue = queue_file.read()
+
+        #setup mock object
+        m.post('https://api.omniture.com/admin/1.4/rest/?method=Report.Get', text=json_response)
+        m.post('https://api.omniture.com/admin/1.4/rest/?method=Report.Queue', text=report_queue)
+
+
+        self.assertIsInstance(self.analytics.suites[test_report_suite].report.run(interval=0.01), omniture.Report, "The run method doesn't work to create a report")
+        self.assertIsInstance(self.analytics.suites[test_report_suite].report.run(interval=2), omniture.Report, "The run method doesn't work to create a report")
+        self.assertIsInstance(self.analytics.suites[test_report_suite].report.run(interval=31), omniture.Report, "The run method doesn't work to create a report")
 
     @requests_mock.mock()
     def test_report_async(self,m):
@@ -351,6 +371,23 @@ class QueryTest(unittest.TestCase):
         report = self.analytics.suites[test_report_suite].report.range(dateFrom,dateTo)
         self.assertEqual(report.raw['dateFrom'], dateFrom, "Start date isn't getting set correctly")
         self.assertEqual(report.raw['dateTo'], dateTo, "End date isn't getting set correctly")
+        
+    def test_date_range_days(self):
+        """Make sure the dayes can be passed into the range function and that they work correctly"""
+        cDateFrom = "2017-01-01"
+        cDateTo = "2017-01-02"
+        report = self.analytics.suites[test_report_suite].report.range(cDateFrom,days=2)
+        self.assertEqual(report.raw['dateFrom'],cDateFrom, "Start Data isnt' working")
+        self.assertEqual(report.raw['dateTo'], cDateTo,"Check the days param of the range function")
+
+    def test_date_range_months(self):
+        """Make sure the dayes can be passed into the range function and that they work correctly"""
+        cDateFrom = "2017-01-01"
+        cDateTo = "2017-03-31"
+        report = self.analytics.suites[test_report_suite].report.range(cDateFrom,months=3)
+        self.assertEqual(report.raw['dateFrom'],cDateFrom, "Start Data isnt' working")
+        self.assertEqual(report.raw['dateTo'], cDateTo,"Check the days param of the range function")
+
 
     #@unittest.skip("skip")
     def test_granularity_date_range(self):
