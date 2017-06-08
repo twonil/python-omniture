@@ -65,7 +65,36 @@ def sync(queries, heartbeat=None, interval=1):
         message = "Queries should be a list or a dictionary, received: {}".format(
             queries.__class__)
         raise ValueError(message)
-
+        
+def async(queries):
+    if isinstance(queries, list):
+        return [query.async() for query in queries]
+    elif isinstance(queries, dict):
+        return {key: query.async() for key, query in queries.items()}
+    else:
+        message = "Queries should be a list or a dictionary, received: {}".format(
+            queries.__class__)
+        raise ValueError(message)
+        
+def check(queries):
+    if isinstance(queries, list):
+        return [query.check() for query in queries]
+    elif isinstance(queries, dict):
+        return {key: query.check() for key, query in queries.items()}
+    else:
+        message = "Queries should be a list or a dictionary, received: {}".format(
+            queries.__class__)
+        raise ValueError(message)
+        
+def get_reports(queries)
+    if isinstance(queries, list):
+        return [query.get_report_no_error() for query in queries]
+    elif isinstance(queries, dict):
+        return {key: query.get_report_no_error() for key, query in queries.items()}
+    else:
+        message = "Queries should be a list or a dictionary, received: {}".format(
+            queries.__class__)
+        raise ValueError(message)
 
 def setup_logging(default_path='logging.json', default_level=logging.INFO, env_key='LOG_CFG'):
     """Setup logging configuration.  """

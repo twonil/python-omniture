@@ -353,6 +353,12 @@ class Query(object):
             return self.processed_response
         else:
             raise reports.ReportNotReadyError('{"message":"Doh! the report is not ready yet"}')
+    
+    def get_report_no_error(self):
+        try:
+            return self.get_report
+        except reports.ReportNotReadyError:
+            return (False,'{"mesage":"Doh! the report is not ready yet"}')
         
     def run(self, defaultheartbeat=True, heartbeat=None, interval=0.01):
         """Shortcut for sync(). Runs the current report synchronously. """
