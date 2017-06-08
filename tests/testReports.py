@@ -151,8 +151,8 @@ class ReportTest(unittest.TestCase):
 
         for report in response:
             #Check Data
-            self.assertEqual(report.data[-1]["visits"], "0")
-            self.assertEqual(report.data[-1]["pageviews"], "0")    
+            self.assertEqual(report.data[-1]["visits"], 0)
+            self.assertEqual(report.data[-1]["pageviews"], 0)    
 
 
     @requests_mock.mock()
