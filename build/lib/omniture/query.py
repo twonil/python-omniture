@@ -334,9 +334,7 @@ class Query(object):
 
     def sync(self, heartbeat=None, interval=0.01):
         """ Run the report synchronously,"""
-        print("sync called")
         if self.status == self.STATUSES[0]:
-            print("Queing Report")
             self.queue()
             self.probe(heartbeat, interval)
         if self.status == self.STATUSES[1]:
@@ -355,6 +353,12 @@ class Query(object):
             return self.processed_response
         else:
             raise reports.ReportNotReadyError('{"message":"Doh! the report is not ready yet"}')
+    
+    def get_report_no_error(self):
+        try:
+            return self.get_report
+        except reports.ReportNotReadyError:
+            return (False,'{"mesage":"Doh! the report is not ready yet"}')
         
     def run(self, defaultheartbeat=True, heartbeat=None, interval=0.01):
         """Shortcut for sync(). Runs the current report synchronously. """

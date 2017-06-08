@@ -150,11 +150,13 @@ class Report(object):
                 data_set.extend(self.parse_rows(row['breakdown'], level+1, data))
             elif 'counts' in row:
                 for index, metric in enumerate(row['counts']):
-                        #decide what type of event
-                        if self.metrics[index].decimals > 0 or metric.find('.') >-1:
-                            data[str(self.metrics[index].id)] = float(metric)
-                        else:
-                            data[str(self.metrics[index].id)] = int(metric)
+                    if metric == 'INF':
+                        metric = u'0'
+                    #decide what type of event
+                    if self.metrics[index].decimals > 0 or metric.find('.') >-1:
+                        data[str(self.metrics[index].id)] = float(metric)
+                    else:
+                        data[str(self.metrics[index].id)] = int(metric)
 
 
 
