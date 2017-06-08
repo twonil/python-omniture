@@ -299,3 +299,4 @@ Contributers
 Special Thanks to
 * [adibbehjat](https://github.com/adibbehjat) for helping think through the client side validation and when to skip it
 * [aarontoledo](https://github.com/aarontoledo) for helping with the dreaded classificaitons bug
+* [WRinnovation](https://github.com/WRinnovation) for helping with the INF metrics
