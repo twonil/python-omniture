@@ -128,6 +128,34 @@ class ReportTest(unittest.TestCase):
             self.assertIsInstance(report.data[0]['visits'], int, "The visits aren't getting populated in the data")
 
     @requests_mock.mock()
+    def test_ranked_inf_report(self, m):
+        """ Make sure the ranked report is being processed
+        """
+
+        path = os.path.dirname(__file__)
+
+        with open(path+'/mock_objects/ranked_report_inf.json') as data_file:
+            json_response = data_file.read()
+
+        with open(path+'/mock_objects/Report.Queue.json') as queue_file:
+            report_queue = queue_file.read()
+
+        #setup mock object
+        m.post('https://api.omniture.com/admin/1.4/rest/?method=Report.Get', text=json_response)
+        m.post('https://api.omniture.com/admin/1.4/rest/?method=Report.Queue', text=report_queue)
+
+        ranked = self.analytics.suites[test_report_suite].report.element("page").metric("pageviews").metric("visits")
+        queue = []
+        queue.append(ranked)
+        response = omniture.sync(queue)
+
+        for report in response:
+            #Check Data
+            self.assertEqual(report.data[-1]["visits"], "0")
+            self.assertEqual(report.data[-1]["pageviews"], "0")    
+
+
+    @requests_mock.mock()
     def test_trended_report(self,m):
         """Make sure the trended reports are being processed corretly"""
 
