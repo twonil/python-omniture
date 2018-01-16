@@ -10,9 +10,9 @@ import json
 import logging
 import sys
 
-from .elements import Value
-from . import reports
-from . import utils
+from elements import Value
+import reports
+import utils
 
 
 def immutable(method):
@@ -24,14 +24,16 @@ def immutable(method):
 
     return wrapped_method
 
+
 class ReportNotSubmittedError(Exception):
-    """ Exception that is raised when a is requested by hasn't been submitted 
+    """ Exception that is raised when a is requested by hasn't been submitted
         to Adobe
     """
-    def __init__(self,error):
+    def __init__(self, error):
         self.log = logging.getLogger(__name__)
         self.log.debug("Report Has not been submitted, call async() or run()")
         super(ReportNotSubmittedError, self).__init__("Report Not Submitted")
+
 
 class Query(object):
     """ Lets you build a query to the Reporting API for Adobe Analytics.
@@ -46,23 +48,23 @@ class Query(object):
     """
 
     GRANULARITY_LEVELS = ['hour', 'day', 'week', 'month', 'quarter', 'year']
-    STATUSES = ["Not Submitted","Not Ready","Done"]
+    STATUSES = ["Not Submitted", "Not Ready", "Done"]
 
     def __init__(self, suite):
         """ Setup the basic structure of the report query. """
         self.log = logging.getLogger(__name__)
         self.suite = suite
         self.raw = {}
-        #Put the report suite in so the user can print
-        #the raw query and have it work as is
+        # Put the report suite in so the user can print
+        # the raw query and have it work as is
         self.raw['reportSuiteID'] = str(self.suite.id)
         self.id = None
         self.method = "Get"
         self.status = self.STATUSES[0]
-        #The report object
+        # The report object
         self.report = reports.Report
-        #The fully hydrated report object
-        self.processed_response = None  
+        # The fully hydrated report object
+        self.processed_response = None
         self.unprocessed_response = None
 
     def _normalize_value(self, value, category):
@@ -114,7 +116,7 @@ class Query(object):
         stop = utils.date(stop)
 
         if days or months:
-            stop = start + relativedelta(days=days-1, months=months)
+            stop = start + relativedelta(days=days - 1, months=months)
         else:
             stop = stop or start
 
@@ -172,7 +174,8 @@ class Query(object):
         return self
 
     @immutable
-    def filter(self, segment=None, segments=None, disable_validation=False, **kwargs):
+    def filter(self, segment=None, segments=None,
+               disable_validation=False, **kwargs):
         """ Set Add a segment to the report. """
         # It would appear to me that 'segment_id' has a strict subset
         # of the functionality of 'segments', but until I find out for
@@ -180,12 +183,15 @@ class Query(object):
         if 'segments' not in self.raw:
             self.raw['segments'] = []
 
-        if disable_validation == False:
+        if disable_validation is False:
             if segments:
-                self.raw['segments'].extend(self._serialize_values(segments, 'segments'))
+                self.raw['segments'].extend(
+                    self._serialize_values(segments, 'segments')
+                )
             elif segment:
-                self.raw['segments'].append({"id":self._normalize_value(segment,
-                                                                            'segments').id})
+                self.raw['segments'].append(
+                    {"id": self._normalize_value(segment, 'segments').id}
+                )
             elif kwargs:
                 self.raw['segments'].append(kwargs)
             else:
@@ -193,9 +199,11 @@ class Query(object):
 
         else:
             if segments:
-                self.raw['segments'].extend([{"id":segment} for segment in segments])
+                self.raw['segments'].extend(
+                    [{"id": segment} for segment in segments]
+                )
             elif segment:
-                self.raw['segments'].append({"id":segment})
+                self.raw['segments'].append({"id": segment})
             elif kwargs:
                 self.raw['segments'].append(kwargs)
             else:
@@ -213,29 +221,28 @@ class Query(object):
             a breakdown
         """
 
-        if self.raw.get('elements', None) == None:
+        if self.raw.get('elements', None) is None:
             self.raw['elements'] = []
 
-        if disable_validation == False:
+        if disable_validation is False:
             element = self._serialize_value(element, 'elements')
         else:
-            element = {"id":element}
+            element = {"id": element}
 
-        if kwargs != None:
+        if kwargs is not None:
             element.update(kwargs)
         self.raw['elements'].append(deepcopy(element))
 
-        #TODO allow this method to accept a list
+        # TODO allow this method to accept a list
         return self
-
 
     def breakdown(self, element, **kwargs):
         """ Pass through for element. Adds an element to the report. """
         return self.element(element, **kwargs)
 
-
     def elements(self, *args, **kwargs):
-        """ Shortcut for adding multiple elements. Doesn't support arguments """
+        """ Shortcut for adding multiple elements. Doesn't support arguments
+        """
         obj = self
         for e in args:
             obj = obj.element(e, **kwargs)
@@ -250,14 +257,16 @@ class Query(object):
         This method is intended to be called multiple time.
             Each time a metric will be added to the report
         """
-        if self.raw.get('metrics', None) == None:
+        if self.raw.get('metrics', None) is None:
             self.raw['metrics'] = []
-        if disable_validation == False:
-            self.raw['metrics'].append(self._serialize_value(metric, 'metrics'))
+        if disable_validation is False:
+            self.raw['metrics'].append(
+                self._serialize_value(metric, 'metrics')
+            )
         else:
-            self.raw['metrics'].append({"id":metric})
-        #self.raw['metrics'] = self._serialize_values(metric, 'metrics')
-        #TODO allow this metric to accept a list
+            self.raw['metrics'].append({"id": metric})
+        # self.raw['metrics'] = self._serialize_values(metric, 'metrics')
+        # TODO allow this metric to accept a list
         return self
 
     def metrics(self, *args, **kwargs):
@@ -280,7 +289,6 @@ class Query(object):
         self.raw['currentData'] = True
         return self
 
-
     def build(self):
         """ Return the report descriptoin as an object """
         return {'reportDescription': self.raw}
@@ -298,12 +306,12 @@ class Query(object):
 
     def probe(self, heartbeat=None, interval=1, soak=False):
         """ Keep checking until the report is done"""
-        #Loop until the report is done
-        while self.is_ready() == False:
+        # Loop until the report is done
+        while self.is_ready() is False:
             if heartbeat:
                 heartbeat()
             time.sleep(interval)
-            #Use a back off up to 30 seconds to play nice with the APIs
+            # Use a back off up to 30 seconds to play nice with the APIs
             if interval < 1:
                 interval = 1
             elif interval < 30:
@@ -311,26 +319,30 @@ class Query(object):
             else:
                 interval = 30
             self.log.debug("Check Interval: %s seconds", interval)
-            
+
     def is_ready(self):
         """ inspects the response to see if the report is ready """
         if self.status == self.STATUSES[0]:
-            raise ReportNotSubmittedError('{"message":"Doh! the report needs to be submitted first"}')
+            raise ReportNotSubmittedError(
+                '{"message":"Doh! the report needs to be submitted first"}'
+            )
         elif self.status == self.STATUSES[1]:
             try:
-                # the request method catches the report and populates it automatically
-                response = self.suite.request('Report','Get',{'reportID': self.id})
+                # the request method catches the report and populates it
+                # automatically
+                response = self.suite.request(
+                    'Report', 'Get', {'reportID': self.id}
+                )
                 self.status = self.STATUSES[2]
                 self.unprocessed_response = response
                 self.processed_response = self.report(response, self)
                 return True
             except reports.ReportNotReadyError:
                 self.status = self.STATUSES[1]
-                #raise reports.InvalidReportError(response)
+                # raise reports.InvalidReportError(response)
                 return False
         elif self.status == self.STATUSES[2]:
             return True
-        
 
     def sync(self, heartbeat=None, interval=0.01):
         """ Run the report synchronously,"""
@@ -346,17 +358,19 @@ class Query(object):
         if self.status == self.STATUSES[0]:
             self.queue()
         return self
-        
+
     def get_report(self):
         self.is_ready()
         if self.status == self.STATUSES[2]:
             return self.processed_response
         else:
-            raise reports.ReportNotReadyError('{"message":"Doh! the report is not ready yet"}')
-        
+            raise reports.ReportNotReadyError(
+                '{"message":"Doh! the report is not ready yet"}'
+            )
+
     def run(self, defaultheartbeat=True, heartbeat=None, interval=0.01):
         """Shortcut for sync(). Runs the current report synchronously. """
-        if defaultheartbeat == True:
+        if defaultheartbeat is True:
             rheartbeat = self.heartbeat
         else:
             rheartbeat = heartbeat
@@ -368,7 +382,6 @@ class Query(object):
         sys.stdout.write('.')
         sys.stdout.flush()
 
-
     def check(self):
         """
             Basically an alias to is ready to make the interface a bit better
@@ -377,30 +390,58 @@ class Query(object):
 
     def cancel(self):
         """ Cancels a the report from the Queue on the Adobe side. """
-        return self.suite.request('Report',
-                                      'CancelReport',
-                                      {'reportID': self.id})
+        return self.suite.request(
+            'Report',
+            'CancelReport',
+            {'reportID': self.id}
+        )
+
     def json(self):
         """ Return a JSON string of the Request """
-        return str(json.dumps(self.build(), indent=4, separators=(',', ': '), sort_keys=True))
+        return str(
+            json.dumps(
+                self.build(),
+                indent=4,
+                separators=(',', ': '),
+                sort_keys=True
+            )
+        )
 
     def __str__(self):
         return self.json()
 
     def _repr_html_(self):
         """ Format in HTML for iPython Users """
-        report = { str(key):value for key,value in self.raw.items() }
+        report = {str(key): value for key, value in self.raw.items()}
         html = "Current Report Settings</br>"
-        for k,v in sorted(list(report.items())):
-            html += "<b>{0}</b>: {1} </br>".format(k,v)
+        for k, v in sorted(list(report.items())):
+            html += "<b>{0}</b>: {1} </br>".format(k, v)
         if self.id:
             html += "This report has been submitted</br>"
             html += "<b>{0}</b>: {1} </br>".format("ReportId", self.id)
         return html
 
-
     def __dir__(self):
         """ Give sensible options for Tab Completion mostly for iPython """
-        return ['async','breakdown','cancel','clone','currentData', 'element',
-                'filter', 'granularity', 'id','json' ,'metric', 'queue', 'range', 'raw', 'report',
-                'request', 'run', 'set', 'sortBy', 'suite']
+        return [
+            'async',
+            'breakdown',
+            'cancel',
+            'clone',
+            'currentData',
+            'element',
+            'filter',
+            'granularity',
+            'id',
+            'json',
+            'metric',
+            'queue',
+            'range',
+            'raw',
+            'report',
+            'request',
+            'run',
+            'set',
+            'sortBy',
+            'suite'
+        ]
