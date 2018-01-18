@@ -5,7 +5,7 @@ from __future__ import print_function
 import copy
 import logging
 
-from .import utils
+import utils
 
 
 class Value(object):
@@ -22,7 +22,9 @@ class Value(object):
 
     @classmethod
     def list(cls, name, items, parent, title='title', id='id'):
-        values = [cls(item[title], str(item[id]), parent, item) for item in items]
+        values = [
+            cls(item[title], str(item[id]), parent, item) for item in items
+        ]
         return utils.AddressableList(values, name)
 
     def __repr__(self):
@@ -40,7 +42,6 @@ class Value(object):
     def _repr_html_(self):
         """ Format in HTML for iPython Users """
         return "<td><b>{0}</b></td><td>{1}</td>".format(self.id, self.title)
-
 
     def __str__(self):
         """ allows users to print this out in a user friendly using print

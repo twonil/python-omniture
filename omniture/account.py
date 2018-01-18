@@ -10,36 +10,42 @@ import uuid
 import hashlib
 import base64
 import os
-from datetime import datetime
+import ast
 
-from .elements import Value
-from .query import Query
-from . import reports
-from . import utils
+from elements import Value
+from query import Query
+import reports
+import utils
 
 
 class Account(object):
-    """ A wrapper for the Adobe Analytics API. Allows you to query the reporting API """
+    """ A wrapper for the Adobe Analytics API. Allows you to query
+    the reporting API """
     DEFAULT_ENDPOINT = 'https://api.omniture.com/admin/1.4/rest/'
 
-    def __init__(self, username, secret, endpoint=DEFAULT_ENDPOINT, cache=False, cache_key=None):
+    def __init__(self, username, secret, endpoint=DEFAULT_ENDPOINT,
+                 cache=False, cache_key=None):
         """Authentication to make requests."""
         self.log = logging.getLogger(__name__)
         self.log.info(datetime.now().strftime("%Y-%m-%d %I%p:%M:%S"))
         self.username = username
         self.secret = secret
         self.endpoint = endpoint
-        #Allow someone to set a custom cache key
+        # Allow someone to set a custom cache key
         self.cache = cache
         if cache_key:
             self.cache_key = cache_key
         else:
             self.cache_key = date.today().isoformat()
         if self.cache:
-            data = self.request_cached('Company', 'GetReportSuites')['report_suites']
+            data = self.request_cached(
+                'Company', 'GetReportSuites'
+            )['report_suites']
         else:
             data = self.request('Company', 'GetReportSuites')['report_suites']
-        suites = [Suite(suite['site_title'], suite['rsid'], self) for suite in data]
+        suites = [
+            Suite(suite['site_title'], suite['rsid'], self) for suite in data
+        ]
         self.suites = utils.AddressableList(suites)
 
     def request_cached(self, api, method, query={}, cache_key=None):
@@ -48,11 +54,15 @@ class Account(object):
         else:
             key = self.cache_key
 
-        #Generate a shortened hash of the query string so that method don't collide
+        # Generate a shortened hash of the query string so that method don't
+        # collide
         query_hash = base64.urlsafe_b64encode(hashlib.md5(query).digest())
 
         try:
-            with open(self.file_path+'/data_'+api+'_'+method+'_'+query_hash+'_'+key+'.txt') as fp:
+            with open(
+                self.file_path + '/data_' + api + '_' + method + '_' +
+                query_hash + '_' + key + '.txt'
+            ) as fp:
                 for line in fp:
                     if line:
                         data = ast.literal_eval(line)
@@ -60,19 +70,27 @@ class Account(object):
         except IOError as e:
             data = self.request(api, method, query)
 
-            # Capture all other old text files
-            #TODO decide if the query should be included in the file list to be cleared out when the cache key changes
-            filelist = [f for f in os.listdir(self.file_path) if f.startswith('data_'+api+'_'+method)]
+            #  Capture all other old text files
+            # TODO decide if the query should be included in the file list to
+            # be cleared out when the cache key changes
+            filelist = [
+                f for f in os.listdir(self.file_path) if f.startswith(
+                    'data_' + api + '_' + method
+                )
+            ]
 
-            # Delete them
+            #  Delete them
             for f in filelist:
-                os.remove(self.file_path+'/'+f)
+                os.remove(self.file_path + '/' + f)
 
-            # Build the new data
-            the_file = open(self.file_path+'/data_'+api+'_'+method+'_'+query_hash+'_'+key+'.txt', 'w')
+            #  Build the new data
+            the_file = open(
+                self.file_path +
+                '/data_' +
+                api + '_' + method + '_' + query_hash + '_' + key + '.txt', 'w'
+            )
             the_file.write(str(data))
             the_file.close()
-
 
     def request(self, api, method, query={}):
         """
@@ -91,7 +109,7 @@ class Account(object):
             params={'method': api + '.' + method},
             data=json.dumps(query),
             headers=self._build_token()
-            )
+        )
         self.log.debug("Response for %s.%s:%s", api, method, response.text)
         json_response = response.json()
 
@@ -99,7 +117,7 @@ class Account(object):
             self.log.debug("Error Code %s", json_response.get('error'))
             if json_response.get('error') == 'report_not_ready':
                 raise reports.ReportNotReadyError(json_response)
-            elif json_response.get('error') != None:
+            elif json_response.get('error') is not None:
                 raise reports.InvalidReportError(json_response)
             else:
                 return json_response
@@ -107,13 +125,13 @@ class Account(object):
             return json_response
 
     def jsonReport(self, reportJSON):
-        """Generates a Report from the JSON (including selecting the report suite)"""
+        """Generates a Report from the JSON (including selecting the report
+        suite)"""
         if type(reportJSON) == str:
             reportJSON = json.loads(reportJSON)
         suiteID = reportJSON['reportDescription']['reportSuiteID']
         suite = self.suites[suiteID]
         return suite.jsonReport(reportJSON)
-
 
     def _serialize_header(self, properties):
         header = []
@@ -144,7 +162,9 @@ class Account(object):
         html = ""
         html += "<b>{0}</b>: {1}</br>".format("Username", self.username)
         html += "<b>{0}</b>: {1}</br>".format("Secret", "***************")
-        html += "<b>{0}</b>: {1}</br>".format("Report Suites", len(self.suites))
+        html += "<b>{0}</b>: {1}</br>".format(
+            "Report Suites", len(self.suites)
+        )
         html += "<b>{0}</b>: {1}</br>".format("Endpoint", self.endpoint)
         return html
 
@@ -194,9 +214,11 @@ class Suite(Value):
     def segments(self):
         """ Return the list of valid segments for the current report suite """
         if self.account.cache:
-            data = self.request_cached('Segments', 'Get',{"accessLevel":"shared"})
+            data = self.request_cached(
+                'Segments', 'Get', {"accessLevel": "shared"}
+            )
         else:
-            data = self.request('Segments', 'Get',{"accessLevel":"shared"})
+            data = self.request('Segments', 'Get', {"accessLevel": "shared"})
         return Value.list('segments', data, self, 'name', 'id',)
 
     @property
@@ -204,17 +226,19 @@ class Suite(Value):
         """ Return a report to be run on this report suite """
         return Query(self)
 
-    def jsonReport(self,reportJSON):
-        """Creates a report from JSON. Accepts either JSON or a string. Useful for deserializing requests"""
+    def jsonReport(self, reportJSON):
+        """Creates a report from JSON. Accepts either JSON or a string. Useful
+        for deserializing requests"""
         q = Query(self)
-        #TODO: Add a method to the Account Object to populate the report suite this call will ignore it on purpose
+        # TODO: Add a method to the Account Object to populate the report suite
+        # this call will ignore it on purpose
         if type(reportJSON) == str:
             reportJSON = json.loads(reportJSON)
 
         reportJSON = reportJSON['reportDescription']
 
         if 'dateFrom' in reportJSON and 'dateTo' in reportJSON:
-            q = q.range(reportJSON['dateFrom'],reportJSON['dateTo'])
+            q = q.range(reportJSON['dateFrom'], reportJSON['dateTo'])
         elif 'dateFrom' in reportJSON:
             q = q.range(reportJSON['dateFrom'])
         elif 'date' in reportJSON:
@@ -226,7 +250,7 @@ class Suite(Value):
             q = q.granularity(reportJSON['dateGranularity'])
 
         if 'source' in reportJSON:
-            q = q.set('source',reportJSON['source'])
+            q = q.set('source', reportJSON['source'])
 
         if 'metrics' in reportJSON:
             for m in reportJSON['metrics']:
@@ -236,30 +260,32 @@ class Suite(Value):
             for e in reportJSON['elements']:
                 id = e['id']
                 del e['id']
-                q= q.element(id, **e)
+                q = q.element(id, **e)
 
         if 'locale' in reportJSON:
-            q = q.set('locale',reportJSON['locale'])
+            q = q.set('locale', reportJSON['locale'])
 
         if 'sortMethod' in reportJSON:
-            q = q.set('sortMethod',reportJSON['sortMethod'])
+            q = q.set('sortMethod', reportJSON['sortMethod'])
 
         if 'sortBy' in reportJSON:
             q = q.sortBy(reportJSON['sortBy'])
 
-        #WARNING This doesn't carry over segment IDs meaning you can't manipulate the segments in the new object
-        #TODO Loop through and add segment ID with filter method (need to figure out how to handle combined)
+        # WARNING This doesn't carry over segment IDs meaning you can't
+        # manipulate the segments in the new object
+        # TODO Loop through and add segment ID with filter method
+        # (need to figure out how to handle combined)
         if 'segments' in reportJSON:
             q = q.set('segments', reportJSON['segments'])
 
         if 'anomalyDetection' in reportJSON:
-            q = q.set('anomalyDetection',reportJSON['anomalyDetection'])
+            q = q.set('anomalyDetection', reportJSON['anomalyDetection'])
 
         if 'currentData' in reportJSON:
-            q = q.set('currentData',reportJSON['currentData'])
+            q = q.set('currentData', reportJSON['currentData'])
 
         if 'elementDataEncoding' in reportJSON:
-            q = q.set('elementDataEncoding',reportJSON['elementDataEncoding'])
+            q = q.set('elementDataEncoding', reportJSON['elementDataEncoding'])
         return q
 
     def _repr_html_(self):

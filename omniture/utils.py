@@ -29,7 +29,9 @@ class AddressableList(list):
         if isinstance(key, int):
             return super(AddressableList, self).__getitem__(key)
         else:
-            matches = [item for item in self if item.title == key or item.id == key]
+            matches = [
+                item for item in self if item.title == key or item.id == key
+            ]
             count = len(matches)
             if count > 1:
                 matches = list(map(repr, matches))
@@ -46,12 +48,15 @@ class AddressableList(list):
     def _repr_html_(self):
         """ HTML formating for iPython users """
         html = "<table>"
-        html += "<tr><td><b>{0}</b></td><td><b>{1}</b></td></tr>".format("ID", "Title")
+        html += "<tr><td><b>{0}</b></td><td><b>{1}</b></td></tr>".format(
+            "ID",
+            "Title"
+        )
         for i in self:
             html += "<tr>"
             html += i._repr_html_()
             html += "</tr>"
-        html +="</table>"
+        html += "</table>"
         return html
 
     def __str__(self):
@@ -65,12 +70,7 @@ class AddressableList(list):
 
 
 def date(obj):
-    #used to ensure compatibility with Python3 without having to user six
-    try:
-        basestring
-    except NameError:
-        basestring = str
-
+    # used to ensure compatibility with Python3 without having to user six
     if obj is None:
         return None
     elif isinstance(obj, datetime.date):
