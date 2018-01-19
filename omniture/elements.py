@@ -5,7 +5,7 @@ from __future__ import print_function
 import copy
 import logging
 
-import utils
+import .utils
 
 
 class Value(object):

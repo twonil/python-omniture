@@ -6,7 +6,7 @@ import logging
 from datetime import datetime
 import json
 
-from elements import Value
+from .elements import Value
 
 
 class InvalidReportError(Exception):
