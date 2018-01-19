@@ -12,10 +12,10 @@ import base64
 import os
 import ast
 
-from elements import Value
-from query import Query
-import reports
-import utils
+from .elements import Value
+from .query import Query
+import .reports
+import .utils
 
 
 class Account(object):

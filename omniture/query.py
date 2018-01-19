@@ -10,9 +10,9 @@ import json
 import logging
 import sys
 
-from elements import Value
-import reports
-import utils
+from .elements import Value
+import .reports
+import .utils
 
 
 def immutable(method):
