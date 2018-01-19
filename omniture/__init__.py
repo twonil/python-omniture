@@ -6,17 +6,14 @@ import json
 import logging.config
 import io
 
-from .account import Account, Suite
-from .elements import Value
-from .query import Query, ReportNotSubmittedError
-from .reports import InvalidReportError, Report, DataWarehouseReport
-from .version import __version__
-from .utils import AddressableList, affix
+from .account import Account
+from .utils import affix
 
 
-def authenticate(username, secret=None, endpoint=Account.DEFAULT_ENDPOINT, prefix='', suffix=''):
+def authenticate(username, secret=None, endpoint=Account.DEFAULT_ENDPOINT,
+                 prefix='', suffix=''):
     """ Authenticate to the Adobe API using WSSE """
-    #setup logging
+    # setup logging
     setup_logging()
     # if no secret is specified, we will assume that instead
     # we have received a dictionary with credentials (such as
@@ -48,11 +45,14 @@ def sync(queries, heartbeat=None, interval=1):
     use `omniture.sync` to fetch the results for queries that
     have already been queued:
 
-        query = mysuite.report.range('2013-06-06').over_time('pageviews', 'page')
+        query = mysuite.report.range('2013-06-06').over_time(
+            'pageviews', 'page'
+        )
         omniture.queue(query)
         omniture.sync(query)
 
-    The interval will operate under an exponetial decay until it reaches 5 minutes. At which point it will ping every 5 minutes
+    The interval will operate under an exponetial decay until it reaches 5
+    minutes. At which point it will ping every 5 minutes
     """
 
     queue(queries)
@@ -60,14 +60,23 @@ def sync(queries, heartbeat=None, interval=1):
     if isinstance(queries, list):
         return [query.sync(heartbeat, interval) for query in queries]
     elif isinstance(queries, dict):
-        return {key: query.sync(heartbeat, interval) for key, query in queries.items()}
+        return {
+            key: query.sync(
+                heartbeat,
+                interval
+            ) for key, query in queries.items()
+        }
     else:
-        message = "Queries should be a list or a dictionary, received: {}".format(
-            queries.__class__)
+        message = (
+            "Queries should be a list or a dictionary, received: {}".format(
+                queries.__class__
+            )
+        )
         raise ValueError(message)
 
 
-def setup_logging(default_path='logging.json', default_level=logging.INFO, env_key='LOG_CFG'):
+def setup_logging(default_path='logging.json', default_level=logging.INFO,
+                  env_key='LOG_CFG'):
     """Setup logging configuration.  """
     path = default_path
     value = os.getenv(env_key, None)
