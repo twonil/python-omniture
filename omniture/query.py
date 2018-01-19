@@ -10,9 +10,8 @@ import json
 import logging
 import sys
 
-from .elements import Value
-import .reports
-import .utils
+from omniture import reports, utils
+from omniture.elements import Value
 
 
 def immutable(method):

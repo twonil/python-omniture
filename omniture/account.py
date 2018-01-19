@@ -12,10 +12,9 @@ import base64
 import os
 import ast
 
-from .elements import Value
-from .query import Query
-import .reports
-import .utils
+from omniture import reports, utils
+from omniture.elements import Value
+from omniture.query import Query
 
 
 class Account(object):

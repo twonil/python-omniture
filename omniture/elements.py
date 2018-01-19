@@ -4,8 +4,7 @@ from __future__ import print_function
 
 import copy
 import logging
-
-import .utils
+import omniture.utils
 
 
 class Value(object):
